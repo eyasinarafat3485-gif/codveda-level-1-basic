@@ -82,18 +82,30 @@ function checkAuthState() {
     // IF USER IS LOGGED IN
     if (user) {
         // Toggle Desktop Actions
-        if (loggedOutActions) loggedOutActions.setAttribute('style', 'display: none !important');
-        if (loggedInActions) loggedInActions.setAttribute('style', 'display: flex !important');
+        if (loggedOutActions) {
+            loggedOutActions.classList.add('hidden');
+            loggedOutActions.classList.remove('flex');
+        }
+        if (loggedInActions) {
+            loggedInActions.classList.remove('hidden');
+            loggedInActions.classList.add('flex');
+        }
 
         // Toggle Mobile Actions
-        if (loggedOutActionsMobile) loggedOutActionsMobile.setAttribute('style', 'display: none !important');
-        if (loggedInActionsMobile) loggedInActionsMobile.setAttribute('style', 'display: flex !important');
+        if (loggedOutActionsMobile) {
+            loggedOutActionsMobile.classList.add('hidden');
+            loggedOutActionsMobile.classList.remove('flex');
+        }
+        if (loggedInActionsMobile) {
+            loggedInActionsMobile.classList.remove('hidden');
+            loggedInActionsMobile.classList.add('flex');
+        }
 
         // Render Avatar Initial / Image
         const initial = user.avatar || (user.name ? user.name.charAt(0).toUpperCase() : 'U');
 
         if (user.photoUrl && user.photoUrl.startsWith('http')) {
-            const imgHtml = `<img src="${user.photoUrl}" alt="${user.name}" class="w-full h-full object-cover" />`;
+            const imgHtml = `<img src="${user.photoUrl}" alt="${user.name}" class="w-full h-full object-cover rounded-full" />`;
             if (userAvatar) userAvatar.innerHTML = imgHtml;
             if (userAvatarMobile) userAvatarMobile.innerHTML = imgHtml;
         } else {
@@ -115,11 +127,23 @@ function checkAuthState() {
     }
     // IF USER IS LOGGED OUT
     else {
-        if (loggedOutActions) loggedOutActions.setAttribute('style', 'display: flex !important');
-        if (loggedInActions) loggedInActions.setAttribute('style', 'display: none !important');
+        if (loggedOutActions) {
+            loggedOutActions.classList.remove('hidden');
+            loggedOutActions.classList.add('flex');
+        }
+        if (loggedInActions) {
+            loggedInActions.classList.add('hidden');
+            loggedInActions.classList.remove('flex');
+        }
 
-        if (loggedOutActionsMobile) loggedOutActionsMobile.setAttribute('style', 'display: flex !important');
-        if (loggedInActionsMobile) loggedInActionsMobile.setAttribute('style', 'display: none !important');
+        if (loggedOutActionsMobile) {
+            loggedOutActionsMobile.classList.remove('hidden');
+            loggedOutActionsMobile.classList.add('flex');
+        }
+        if (loggedInActionsMobile) {
+            loggedOutActionsMobile.classList.add('hidden');
+            loggedOutActionsMobile.classList.remove('flex');
+        }
     }
 
     initIcons();
