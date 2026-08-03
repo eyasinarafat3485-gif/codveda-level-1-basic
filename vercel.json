@@ -2,10 +2,12 @@
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
-  "routes": [
-    { "src": "/signin", "dest": "/signin/index.html" },
-    { "src": "/register", "dest": "/register/index.html" },
-    { "src": "/task1", "dest": "/task1-landing-page/index.html" },
-    { "src": "/task2", "dest": "/task2-interactive-form/index.html" }
+  "rewrites": [
+    { "source": "/signin", "destination": "/signin/index.html" },
+    { "source": "/signin.html", "destination": "/signin/index.html" },
+    { "source": "/register", "destination": "/register/index.html" },
+    { "source": "/register.html", "destination": "/register/index.html" },
+    { "source": "/task1", "destination": "/task1-landing-page/index.html" },
+    { "source": "/task2", "destination": "/task2-interactive-form/index.html" }
   ]
 }
