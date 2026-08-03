@@ -2,431 +2,169 @@
 
 // Task 1: SaaS Landing Page & Auth Script
 
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Safe Initialize Lucide Icons
-    const initIcons = () => {
-        if (typeof lucide !== 'undefined' && lucide.createIcons) {
-            lucide.createIcons();
-        }
-    };
-    initIcons();
-    window.addEventListener('load', initIcons);
+// 1. Initialize Lucide Icons Safely
+function initIcons() {
+    if (typeof lucide !== 'undefined' && lucide.createIcons) {
+        lucide.createIcons();
+    }
+}
 
-    // 2. Toast Notification Helper
-    window.showToast = (message, type = 'success') => {
-        let toastContainer = document.getElementById('toastContainer');
-        if (!toastContainer) {
-            toastContainer = document.createElement('div');
-            toastContainer.id = 'toastContainer';
-            toastContainer.className = 'fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none';
-            document.body.appendChild(toastContainer);
-        }
+// 2. Toast Notification Helper
+window.showToast = function (message, type = 'success') {
+    let toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toastContainer';
+        toastContainer.className = 'fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none';
+        document.body.appendChild(toastContainer);
+    }
 
-        const toast = document.createElement('div');
-        toast.className = `pointer-events-auto px-4 py-3 rounded-xl shadow-2xl border text-xs font-semibold flex items-center gap-2.5 transition-all duration-300 transform translate-y-[-10px] opacity-0 ${
-            type === 'success'
-                ? 'bg-slate-900 border-emerald-500/50 text-emerald-400 shadow-emerald-500/10'
-                : 'bg-slate-900 border-rose-500/50 text-rose-400 shadow-rose-500/10'
+    const toast = document.createElement('div');
+    toast.className = `pointer-events-auto px-4 py-3 rounded-xl shadow-2xl border text-xs font-semibold flex items-center gap-2.5 transition-all duration-300 transform -translate-y-2 opacity-0 ${type === 'success'
+            ? 'bg-slate-900 border-emerald-500/50 text-emerald-400 shadow-emerald-500/10'
+            : 'bg-slate-900 border-rose-500/50 text-rose-400 shadow-rose-500/10'
         }`;
 
-        const iconName = type === 'success' ? 'check-circle-2' : 'info';
-        toast.innerHTML = `<i data-lucide="${iconName}" class="w-4 h-4 flex-shrink-0"></i> <span>${message}</span>`;
-        toastContainer.appendChild(toast);
+    const iconName = type === 'success' ? 'check-circle-2' : 'info';
+    toast.innerHTML = `<i data-lucide="${iconName}" class="w-4 h-4 flex-shrink-0"></i> <span>${message}</span>`;
+    toastContainer.appendChild(toast);
 
-        if (typeof lucide !== 'undefined' && lucide.createIcons) {
-            lucide.createIcons();
+    initIcons();
+
+    requestAnimationFrame(() => {
+        toast.classList.remove('-translate-y-2', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+    });
+
+    setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('-translate-y-2', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+    }, 3500);
+};
+
+// 3. Main Auth Checker Function
+function checkAuthState() {
+    const loggedOutActions = document.getElementById('loggedOutActions');
+    const loggedInActions = document.getElementById('loggedInActions');
+    const loggedOutActionsMobile = document.getElementById('loggedOutActionsMobile');
+    const loggedInActionsMobile = document.getElementById('loggedInActionsMobile');
+
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+    const userAvatarMobile = document.getElementById('userAvatarMobile');
+    const userNameMobile = document.getElementById('userNameMobile');
+    const userEmailMobile = document.getElementById('userEmailMobile');
+
+    // Retrieve localstorage session
+    const savedUser = localStorage.getItem('nexus_user');
+    const legacyLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const legacyEmail = localStorage.getItem('userEmail');
+
+    let user = null;
+
+    if (savedUser) {
+        try {
+            user = JSON.parse(savedUser);
+        } catch (e) {
+            console.error('Session JSON Parse Error', e);
         }
-
-        requestAnimationFrame(() => {
-            toast.classList.remove('translate-y-[-10px]', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-        });
-
-        setTimeout(() => {
-            toast.classList.remove('translate-y-0', 'opacity-100');
-            toast.classList.add('translate-y-[-10px]', 'opacity-0');
-            setTimeout(() => toast.remove(), 300);
-        }, 3500);
-    };
-
-    // 3. User Authentication State & Navbar Management
-    function checkAuthState() {
-        const loggedOutActions = document.getElementById('loggedOutActions');
-        const loggedInActions = document.getElementById('loggedInActions');
-        const loggedOutActionsMobile = document.getElementById('loggedOutActionsMobile');
-        const loggedInActionsMobile = document.getElementById('loggedInActionsMobile');
-        const userAvatar = document.getElementById('userAvatar');
-        const userName = document.getElementById('userName');
-        const userAvatarMobile = document.getElementById('userAvatarMobile');
-        const userNameMobile = document.getElementById('userNameMobile');
-        const userEmailMobile = document.getElementById('userEmailMobile');
-
-        const savedUser = localStorage.getItem('nexus_user');
-
-        if (savedUser) {
-            try {
-                const user = JSON.parse(savedUser);
-                if (loggedOutActions) loggedOutActions.classList.add('hidden');
-                if (loggedInActions) loggedInActions.classList.remove('hidden');
-                if (loggedOutActionsMobile) loggedOutActionsMobile.classList.add('hidden');
-                if (loggedInActionsMobile) loggedInActionsMobile.classList.remove('hidden');
-
-                if (user.photoUrl && user.photoUrl.startsWith('http')) {
-                    if (userAvatar) userAvatar.innerHTML = `<img src="${user.photoUrl}" alt="${user.name}" class="w-7 h-7 rounded-full object-cover" />`;
-                    if (userAvatarMobile) userAvatarMobile.innerHTML = `<img src="${user.photoUrl}" alt="${user.name}" class="w-8 h-8 rounded-full object-cover" />`;
-                } else {
-                    if (userAvatar) userAvatar.textContent = user.avatar || user.name.charAt(0).toUpperCase();
-                    if (userAvatarMobile) userAvatarMobile.textContent = user.avatar || user.name.charAt(0).toUpperCase();
-                }
-                if (userName) userName.textContent = user.name;
-                if (userNameMobile) userNameMobile.textContent = user.name;
-                if (userEmailMobile) userEmailMobile.textContent = user.email || '';
-
-                // Show welcome toast if just logged in
-                if (sessionStorage.getItem('nexus_just_logged_in') === 'true') {
-                    sessionStorage.removeItem('nexus_just_logged_in');
-                    setTimeout(() => {
-                        showToast(`Welcome back, ${user.name}! Signed in successfully.`, 'success');
-                    }, 400);
-                }
-            } catch (e) {
-                console.error('Failed to parse user session', e);
-            }
-        } else {
-            if (loggedOutActions) loggedOutActions.classList.remove('hidden');
-            if (loggedInActions) loggedInActions.classList.add('hidden');
-            if (loggedOutActionsMobile) loggedOutActionsMobile.classList.remove('hidden');
-            if (loggedInActionsMobile) loggedInActionsMobile.classList.add('hidden');
-        }
+    } else if (legacyLoggedIn && legacyEmail) {
+        const userNameRaw = legacyEmail.split('@')[0].replace(/[._]/g, ' ');
+        const formattedName = userNameRaw.charAt(0).toUpperCase() + userNameRaw.slice(1);
+        user = {
+            name: formattedName,
+            email: legacyEmail,
+            avatar: formattedName.charAt(0).toUpperCase()
+        };
     }
 
+    // IF USER IS LOGGED IN
+    if (user) {
+        // Toggle Desktop Actions
+        if (loggedOutActions) loggedOutActions.setAttribute('style', 'display: none !important');
+        if (loggedInActions) loggedInActions.setAttribute('style', 'display: flex !important');
+
+        // Toggle Mobile Actions
+        if (loggedOutActionsMobile) loggedOutActionsMobile.setAttribute('style', 'display: none !important');
+        if (loggedInActionsMobile) loggedInActionsMobile.setAttribute('style', 'display: flex !important');
+
+        // Render Avatar Initial / Image
+        const initial = user.avatar || (user.name ? user.name.charAt(0).toUpperCase() : 'U');
+
+        if (user.photoUrl && user.photoUrl.startsWith('http')) {
+            const imgHtml = `<img src="${user.photoUrl}" alt="${user.name}" class="w-full h-full object-cover" />`;
+            if (userAvatar) userAvatar.innerHTML = imgHtml;
+            if (userAvatarMobile) userAvatarMobile.innerHTML = imgHtml;
+        } else {
+            if (userAvatar) userAvatar.textContent = initial;
+            if (userAvatarMobile) userAvatarMobile.textContent = initial;
+        }
+
+        if (userName) userName.textContent = user.name || 'User';
+        if (userNameMobile) userNameMobile.textContent = user.name || 'User';
+        if (userEmailMobile) userEmailMobile.textContent = user.email || '';
+
+        // Toast Notification on Login
+        if (sessionStorage.getItem('nexus_just_logged_in') === 'true') {
+            sessionStorage.removeItem('nexus_just_logged_in');
+            setTimeout(() => {
+                showToast(`Welcome back, ${user.name}!`, 'success');
+            }, 300);
+        }
+    }
+    // IF USER IS LOGGED OUT
+    else {
+        if (loggedOutActions) loggedOutActions.setAttribute('style', 'display: flex !important');
+        if (loggedInActions) loggedInActions.setAttribute('style', 'display: none !important');
+
+        if (loggedOutActionsMobile) loggedOutActionsMobile.setAttribute('style', 'display: flex !important');
+        if (loggedInActionsMobile) loggedInActionsMobile.setAttribute('style', 'display: none !important');
+    }
+
+    initIcons();
+}
+
+// 4. Sign Out Function
+function handleSignOut() {
+    localStorage.removeItem('nexus_user');
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userEmail');
+    checkAuthState();
+    showToast('Signed out successfully!', 'success');
+}
+
+// 5. Initialize Events
+document.addEventListener('DOMContentLoaded', () => {
     checkAuthState();
 
-    // Sign Out Handlers
     const signOutBtn = document.getElementById('signOutBtn');
     const signOutBtnMobile = document.getElementById('signOutBtnMobile');
-
-    function handleSignOut() {
-        localStorage.removeItem('nexus_user');
-        checkAuthState();
-        showToast('Signed out successfully!', 'success');
-    }
 
     if (signOutBtn) signOutBtn.addEventListener('click', handleSignOut);
     if (signOutBtnMobile) signOutBtnMobile.addEventListener('click', handleSignOut);
 
-    // 4. Sign In Form Handler
-    const signinForm = document.getElementById('signinForm');
-    const signinEmail = document.getElementById('signinEmail');
-    const signinPassword = document.getElementById('signinPassword');
-    const signinBtn = document.getElementById('signinBtn');
-    const signinBtnText = document.getElementById('signinBtnText');
-    const signinBtnIcon = document.getElementById('signinBtnIcon');
-    const signinSpinner = document.getElementById('signinSpinner');
-
-    if (signinForm) {
-        signinForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            if (!signinEmail || !signinEmail.value.trim() || !signinPassword || signinPassword.value.length < 6) {
-                showToast('Please enter a valid email and password.', 'error');
-                return;
-            }
-
-            if (signinBtnText) signinBtnText.textContent = 'Signing In...';
-            if (signinBtnIcon) signinBtnIcon.classList.add('hidden');
-            if (signinSpinner) signinSpinner.classList.remove('hidden');
-            if (signinBtn) signinBtn.disabled = true;
-
-            setTimeout(() => {
-                const userEmail = signinEmail.value.trim();
-                const photoUrlInput = document.getElementById('photoUrl');
-                const userName = userEmail.split('@')[0].replace(/[._]/g, ' ');
-                const formattedName = userName.charAt(0).toUpperCase() + userName.slice(1);
-
-                const userSession = {
-                    name: formattedName,
-                    email: userEmail,
-                    photoUrl: photoUrlInput ? photoUrlInput.value.trim() : '',
-                    avatar: formattedName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
-                };
-
-                localStorage.setItem('nexus_user', JSON.stringify(userSession));
-                sessionStorage.setItem('nexus_just_logged_in', 'true');
-
-                showToast(`Welcome back, ${userSession.name}! Redirecting to home...`, 'success');
-
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1000);
-            }, 1000);
-        });
-    }
-
-    // 5. Registration Form Handler
-    const regForm = document.getElementById('registrationForm');
-    const fullnameInput = document.getElementById('fullname');
-    const emailInput = document.getElementById('email');
-    const phoneInput = document.getElementById('phone');
-    const passwordInput = document.getElementById('password');
-    const confirmInput = document.getElementById('confirmPassword');
-    const termsCheck = document.getElementById('termsCheck');
-    const submitBtn = document.getElementById('submitBtn');
-    const btnText = document.getElementById('btnText');
-    const btnIcon = document.getElementById('btnIcon');
-    const btnSpinner = document.getElementById('btnSpinner');
-
-    if (regForm) {
-        regForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            if (!fullnameInput || fullnameInput.value.trim().length < 3) {
-                showToast('Please enter your full name (at least 3 characters).', 'error');
-                return;
-            }
-            if (!emailInput || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim())) {
-                showToast('Please enter a valid work email address.', 'error');
-                return;
-            }
-            if (!passwordInput || passwordInput.value.length < 8) {
-                showToast('Password must be at least 8 characters long.', 'error');
-                return;
-            }
-            if (!termsCheck || !termsCheck.checked) {
-                showToast('You must agree to the Terms of Service.', 'error');
-                return;
-            }
-
-            if (btnText) btnText.textContent = 'Creating Account...';
-            if (btnIcon) btnIcon.classList.add('hidden');
-            if (btnSpinner) btnSpinner.classList.remove('hidden');
-            if (submitBtn) submitBtn.disabled = true;
-
-            setTimeout(() => {
-                showToast('Registration successful! Redirecting to Sign In...', 'success');
-                setTimeout(() => {
-                    window.location.href = 'signin.html?registered=true';
-                }, 1200);
-            }, 1000);
-        });
-    }
-
-    // 6. Mobile Menu Toggle
+    // Mobile Drawer Toggle
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
-    const menuIcon = document.getElementById('menuIcon');
-    const closeIcon = document.getElementById('closeIcon');
-    const mobileLinks = document.querySelectorAll('.mobile-link');
-
     if (mobileMenuBtn && mobileMenu) {
         mobileMenuBtn.addEventListener('click', () => {
-            const isOpen = !mobileMenu.classList.contains('hidden');
-            if (isOpen) {
-                mobileMenu.classList.add('hidden');
-                if (menuIcon) menuIcon.classList.remove('hidden');
-                if (closeIcon) closeIcon.classList.add('hidden');
-            } else {
-                mobileMenu.classList.remove('hidden');
-                if (menuIcon) menuIcon.classList.add('hidden');
-                if (closeIcon) closeIcon.classList.remove('hidden');
-            }
-        });
-
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-                if (menuIcon) menuIcon.classList.remove('hidden');
-                if (closeIcon) closeIcon.classList.add('hidden');
-            });
+            mobileMenu.classList.toggle('hidden');
         });
     }
 
-    // 7. Sticky Navbar & Active Section Highlight on Scroll
-    const navbar = document.getElementById('navbar');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('section[id]');
-
-    window.addEventListener('scroll', () => {
-        if (navbar) {
-            if (window.scrollY > 40) {
-                navbar.classList.add('shadow-xl', 'border-slate-800/80');
-            } else {
-                navbar.classList.remove('shadow-xl');
-            }
-        }
-
-        let currentSectionId = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - 120;
-            const sectionHeight = section.offsetHeight;
-            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-                currentSectionId = section.getAttribute('id');
-            }
-        });
-
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${currentSectionId}`) {
-                link.classList.add('active');
-            }
-        });
-    });
-
-    // 8. Interactive Feature Tabs Switcher
-    const featureTabs = document.querySelectorAll('.feature-tab');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    featureTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const targetId = tab.getAttribute('data-target');
-
-            featureTabs.forEach(t => t.classList.remove('active'));
-            tabContents.forEach(c => c.classList.add('hidden'));
-
-            tab.classList.add('active');
-            const targetContent = document.getElementById(targetId);
-            if (targetContent) {
-                targetContent.classList.remove('hidden');
-            }
-        });
-    });
-
-    // 9. Scroll Triggered Animated Metrics Counter
-    const counters = document.querySelectorAll('.counter');
-    let hasAnimatedCounters = false;
-
-    const animateCounters = () => {
-        counters.forEach(counter => {
-            const targetAttr = counter.getAttribute('data-target');
-            const target = parseFloat(targetAttr);
-            if (isNaN(target)) return;
-
-            const isFloat = target % 1 !== 0;
-            const duration = 1800;
-            const steps = 40;
-            const stepTime = duration / steps;
-            let current = 0;
-            const increment = target / steps;
-
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    current = target;
-                    clearInterval(timer);
-                }
-                counter.textContent = isFloat ? current.toFixed(2) : Math.floor(current);
-            }, stepTime);
-        });
-    };
-
-    const metricsSection = document.getElementById('metrics');
-    if (metricsSection && window.IntersectionObserver) {
-        const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting && !hasAnimatedCounters) {
-                hasAnimatedCounters = true;
-                animateCounters();
-            }
-        }, { threshold: 0.1 });
-
-        observer.observe(metricsSection);
-    }
-    
-    setTimeout(() => {
-        if (!hasAnimatedCounters) {
-            hasAnimatedCounters = true;
-            animateCounters();
-        }
-    }, 1200);
-
-    // 10. Pricing Billing Cycle Toggle (Monthly vs Annual)
-    const pricingToggle = document.getElementById('pricingToggle');
-    const toggleDot = document.getElementById('toggleDot');
-    const monthlyLabel = document.getElementById('monthlyLabel');
-    const annualLabel = document.getElementById('annualLabel');
-    const priceValues = document.querySelectorAll('.price-value');
-    let isAnnual = false;
-
-    if (pricingToggle) {
-        pricingToggle.addEventListener('click', () => {
-            isAnnual = !isAnnual;
-
-            if (isAnnual) {
-                if (toggleDot) {
-                    toggleDot.classList.remove('translate-x-0');
-                    toggleDot.classList.add('translate-x-6');
-                }
-                if (monthlyLabel) {
-                    monthlyLabel.classList.remove('text-white');
-                    monthlyLabel.classList.add('text-slate-400');
-                }
-                if (annualLabel) {
-                    annualLabel.classList.remove('text-slate-400');
-                    annualLabel.classList.add('text-white');
-                }
-            } else {
-                if (toggleDot) {
-                    toggleDot.classList.remove('translate-x-6');
-                    toggleDot.classList.add('translate-x-0');
-                }
-                if (annualLabel) {
-                    annualLabel.classList.remove('text-white');
-                    annualLabel.classList.add('text-slate-400');
-                }
-                if (monthlyLabel) {
-                    monthlyLabel.classList.remove('text-slate-400');
-                    monthlyLabel.classList.add('text-white');
-                }
-            }
-
-            priceValues.forEach(price => {
-                const val = isAnnual ? price.getAttribute('data-annual') : price.getAttribute('data-monthly');
-                if (val !== null) {
-                    price.textContent = `$${val}`;
-                }
-            });
-        });
-    }
-
-    // 11. FAQ Accordion Toggle
+    // FAQ Accordion
     const faqToggles = document.querySelectorAll('.faq-toggle');
-
     faqToggles.forEach(toggle => {
         toggle.addEventListener('click', () => {
             const item = toggle.closest('.faq-item');
             if (!item) return;
             const answer = item.querySelector('.faq-answer');
-            const icon = item.querySelector('.faq-icon');
-
-            const isOpen = answer && !answer.classList.contains('hidden');
-
-            document.querySelectorAll('.faq-answer').forEach(a => a.classList.add('hidden'));
-            document.querySelectorAll('.faq-icon').forEach(i => i.classList.remove('rotate-180'));
-
-            if (!isOpen && answer) {
-                answer.classList.remove('hidden');
-                if (icon) icon.classList.add('rotate-180');
-            }
+            if (answer) answer.classList.toggle('hidden');
         });
     });
-
-    // 12. Newsletter Form Submission Handler
-    const newsletterForm = document.getElementById('newsletterForm');
-    const newsletterSuccess = document.getElementById('newsletterSuccess');
-
-    if (newsletterForm) {
-        newsletterForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const emailInput = document.getElementById('newsletterEmail');
-            if (emailInput && emailInput.value) {
-                newsletterForm.reset();
-                showToast('Thank you for subscribing! Check your inbox for updates.', 'success');
-                if (newsletterSuccess) {
-                    newsletterSuccess.classList.remove('hidden');
-                    setTimeout(() => {
-                        newsletterSuccess.classList.add('hidden');
-                    }, 5000);
-                }
-            }
-        });
-    }
 });
+
+// Force Check Auth on Back/Forward Navigation & Redirects
+window.addEventListener('pageshow', checkAuthState);
+window.addEventListener('load', checkAuthState);

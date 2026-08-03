@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - Nexus Portal</title>
-    <meta name="description"
-        content="Sign in to your modern Nexus developer account.">
+    <meta name="description" content="Sign in to your modern Nexus developer account.">
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="./nexus-favicon.ico">
     <!-- Google Fonts -->
@@ -102,7 +101,8 @@
                     Welcome back to your workspace.
                 </h1>
                 <p class="text-slate-400 text-sm leading-relaxed mb-8">
-                    Sign in to access your high-performance AI automation pipelines, dynamic telemetry dashboards, and team tools.
+                    Sign in to access your high-performance AI automation pipelines, dynamic telemetry dashboards, and
+                    team tools.
                 </p>
 
                 <!-- Value Props List -->
@@ -134,7 +134,8 @@
                     <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
                     <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
                 </div>
-                <p class="text-xs text-slate-300 italic mb-3">"The real-time authentication flow and developer dashboard onboarding is seamless."</p>
+                <p class="text-xs text-slate-300 italic mb-3">"The real-time authentication flow and developer dashboard
+                    onboarding is seamless."</p>
                 <div class="flex items-center gap-3">
                     <div
                         class="w-8 h-8 rounded-full bg-brand-500/20 text-brand-400 flex items-center justify-center font-bold text-xs border border-brand-500/30">
@@ -163,7 +164,8 @@
                         Sign In
                     </a>
                 </div>
-                <a href="index.html" class="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-medium transition-colors">
+                <a href="/index.html"
+                    class="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-medium transition-colors">
                     <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Return to Home
                 </a>
             </div>
@@ -172,7 +174,8 @@
             <div id="signinFormContainer">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-white mb-1">Sign In to Nexus</h2>
-                    <p class="text-slate-400 text-xs">Enter your registered work email and password to access your workspace.</p>
+                    <p class="text-slate-400 text-xs">Enter your registered work email and password to access your
+                        workspace.</p>
                 </div>
 
                 <form id="signinForm" class="space-y-5" novalidate>
@@ -181,8 +184,10 @@
                         <label for="signinEmail" class="block text-xs font-semibold text-slate-300 mb-1.5">
                             Work Email <span class="text-accent-rose">*</span>
                         </label>
-                        <div class="relative input-wrapper rounded-xl bg-slate-950 border border-slate-800 transition-all">
-                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                        <div
+                            class="relative input-wrapper rounded-xl bg-slate-950 border border-slate-800 transition-all">
+                            <div
+                                class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
                                 <i data-lucide="mail" class="w-4 h-4"></i>
                             </div>
                             <input type="email" id="signinEmail" placeholder="alex@company.com"
@@ -200,8 +205,10 @@
                         <label for="signinPassword" class="block text-xs font-semibold text-slate-300 mb-1.5">
                             Password <span class="text-accent-rose">*</span>
                         </label>
-                        <div class="relative input-wrapper rounded-xl bg-slate-950 border border-slate-800 transition-all">
-                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                        <div
+                            class="relative input-wrapper rounded-xl bg-slate-950 border border-slate-800 transition-all">
+                            <div
+                                class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
                                 <i data-lucide="lock" class="w-4 h-4"></i>
                             </div>
                             <input type="password" id="signinPassword" placeholder="••••••••••••"
@@ -223,7 +230,8 @@
 
                     <div class="text-center pt-2">
                         <span class="text-xs text-slate-400">Don't have an account? </span>
-                        <a href="register.html" class="text-xs font-semibold text-brand-400 hover:underline">Register here</a>
+                        <a href="register.html" class="text-xs font-semibold text-brand-400 hover:underline">Register
+                            here</a>
                     </div>
                 </form>
             </div>
@@ -231,8 +239,58 @@
         </div>
     </div>
 
-    <!-- JS Script -->
-    <script src="script.js"></script>
+    <!-- JS Script with Toast & Redirect Logic Fixed -->
+
+    <!-- JS Script with Proper LocalStorage Session Saving -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+
+        document.getElementById('signinForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('signinEmail').value.trim();
+            const password = document.getElementById('signinPassword').value.trim();
+            const signinBtnText = document.getElementById('signinBtnText');
+            const signinBtnIcon = document.getElementById('signinBtnIcon');
+            const signinSpinner = document.getElementById('signinSpinner');
+
+            if (!email || !password) {
+                alert('Please enter both email and password.');
+                return;
+            }
+
+            signinBtnText.textContent = 'Signing in...';
+            if (signinBtnIcon) signinBtnIcon.classList.add('hidden');
+            if (signinSpinner) signinSpinner.classList.remove('hidden');
+
+            setTimeout(() => {
+                // Generate User Details from Email
+                const userNameRaw = email.split('@')[0].replace(/[._]/g, ' ');
+                const formattedName = userNameRaw.charAt(0).toUpperCase() + userNameRaw.slice(1);
+
+                const userSession = {
+                    name: formattedName,
+                    email: email,
+                    photoUrl: '',
+                    avatar: formattedName.charAt(0).toUpperCase()
+                };
+
+                // Save ALL localstorage keys to guarantee index.html detects it!
+                localStorage.setItem('nexus_user', JSON.stringify(userSession));
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                sessionStorage.setItem('nexus_just_logged_in', 'true');
+
+                // Redirect to Home Page
+                window.location.href = 'index.html';
+
+            }, 800);
+        });
+    </script>
 </body>
 
 </html>
