@@ -21,8 +21,8 @@ window.showToast = function (message, type = 'success') {
 
     const toast = document.createElement('div');
     toast.className = `pointer-events-auto px-4 py-3 rounded-xl shadow-2xl border text-xs font-semibold flex items-center gap-2.5 transition-all duration-300 transform -translate-y-2 opacity-0 ${type === 'success'
-            ? 'bg-slate-900 border-emerald-500/50 text-emerald-400 shadow-emerald-500/10'
-            : 'bg-slate-900 border-rose-500/50 text-rose-400 shadow-rose-500/10'
+        ? 'bg-slate-900 border-emerald-500/50 text-emerald-400 shadow-emerald-500/10'
+        : 'bg-slate-900 border-rose-500/50 text-rose-400 shadow-rose-500/10'
         }`;
 
     const iconName = type === 'success' ? 'check-circle-2' : 'info';
@@ -79,7 +79,7 @@ function checkAuthState() {
         };
     }
 
-    // IF USER IS LOGGED IN
+
     if (user) {
         // Toggle Desktop Actions (Inline Flex Row)
         if (loggedOutActions) {
