@@ -231,11 +231,19 @@
         </div>
     </div>
 
-    <!-- JS Script -->
+    <!-- JS Script with Persistent Registered User Retrieval -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
+            }
+
+            // Auto-fill email if passed via URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const prefillEmail = urlParams.get('email');
+            if (prefillEmail) {
+                const signinEmail = document.getElementById('signinEmail');
+                if (signinEmail) signinEmail.value = prefillEmail;
             }
         });
 
@@ -258,16 +266,35 @@
             if (signinSpinner) signinSpinner.classList.remove('hidden');
 
             setTimeout(() => {
-                const userNameRaw = email.split('@')[0].replace(/[._]/g, ' ');
-                const formattedName = userNameRaw.charAt(0).toUpperCase() + userNameRaw.slice(1);
+                const emailKey = email.toLowerCase();
+                const registeredUsers = JSON.parse(localStorage.getItem('nexus_registered_users') || '{}');
+                
+                let userSession = registeredUsers[emailKey];
 
-                const userSession = {
-                    name: formattedName,
-                    email: email,
-                    photoUrl: '',
-                    avatar: formattedName.charAt(0).toUpperCase()
-                };
+                if (userSession) {
+                    // Validate password if user exists in database
+                    if (userSession.password && userSession.password !== password) {
+                        alert('Incorrect password. Please try again.');
+                        signinBtnText.textContent = 'Sign In to Dashboard';
+                        if (signinBtnIcon) signinBtnIcon.classList.remove('hidden');
+                        if (signinSpinner) signinSpinner.classList.add('hidden');
+                        return;
+                    }
+                } else {
+                    // Create session from email if not registered
+                    const userNameRaw = email.split('@')[0].replace(/[._]/g, ' ');
+                    const formattedName = userNameRaw.charAt(0).toUpperCase() + userNameRaw.slice(1);
+                    userSession = {
+                        name: formattedName,
+                        email: email,
+                        photoUrl: '',
+                        avatar: formattedName.charAt(0).toUpperCase()
+                    };
+                    registeredUsers[emailKey] = userSession;
+                    localStorage.setItem('nexus_registered_users', JSON.stringify(registeredUsers));
+                }
 
+                // Save active session for index.html navbar
                 localStorage.setItem('nexus_user', JSON.stringify(userSession));
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('userEmail', email);

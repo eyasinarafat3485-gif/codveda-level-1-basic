@@ -259,7 +259,7 @@
         </div>
     </div>
 
-    <!-- JS Script -->
+    <!-- JS Script with Registered User Persistence -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof lucide !== 'undefined') {
@@ -271,6 +271,8 @@
             e.preventDefault();
 
             const fullname = document.getElementById('fullname').value.trim();
+            const photoUrlInput = document.getElementById('photoUrl');
+            const photoUrl = photoUrlInput ? photoUrlInput.value.trim() : '';
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
 
@@ -287,9 +289,24 @@
             if (btnIcon) btnIcon.classList.add('hidden');
             if (btnSpinner) btnSpinner.classList.remove('hidden');
 
+            // Save Registered User Profile in Database
+            const emailKey = email.toLowerCase();
+            const registeredUsers = JSON.parse(localStorage.getItem('nexus_registered_users') || '{}');
+            
+            const newUser = {
+                name: fullname,
+                email: email,
+                photoUrl: photoUrl,
+                password: password,
+                avatar: fullname.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+            };
+
+            registeredUsers[emailKey] = newUser;
+            localStorage.setItem('nexus_registered_users', JSON.stringify(registeredUsers));
+
             setTimeout(() => {
                 alert('Registration successful! Redirecting to Sign In...');
-                window.location.href = '/signin';
+                window.location.href = `/signin?email=${encodeURIComponent(email)}`;
             }, 800);
         });
     </script>
