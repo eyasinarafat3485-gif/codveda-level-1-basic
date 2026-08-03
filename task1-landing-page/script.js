@@ -1,6 +1,6 @@
 'use client';
 
-// Task 1: SaaS Landing Page Script
+// Task 1: SaaS Landing Page & Auth Script
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Safe Initialize Lucide Icons
@@ -81,6 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (userName) userName.textContent = user.name;
                 if (userNameMobile) userNameMobile.textContent = user.name;
                 if (userEmailMobile) userEmailMobile.textContent = user.email || '';
+
+                // Show welcome toast if just logged in
+                if (sessionStorage.getItem('nexus_just_logged_in') === 'true') {
+                    sessionStorage.removeItem('nexus_just_logged_in');
+                    setTimeout(() => {
+                        showToast(`Welcome back, ${user.name}! Signed in successfully.`, 'success');
+                    }, 400);
+                }
             } catch (e) {
                 console.error('Failed to parse user session', e);
             }
@@ -107,7 +115,103 @@ document.addEventListener('DOMContentLoaded', () => {
     if (signOutBtn) signOutBtn.addEventListener('click', handleSignOut);
     if (signOutBtnMobile) signOutBtnMobile.addEventListener('click', handleSignOut);
 
-    // 4. Mobile Menu Toggle
+    // 4. Sign In Form Handler
+    const signinForm = document.getElementById('signinForm');
+    const signinEmail = document.getElementById('signinEmail');
+    const signinPassword = document.getElementById('signinPassword');
+    const signinBtn = document.getElementById('signinBtn');
+    const signinBtnText = document.getElementById('signinBtnText');
+    const signinBtnIcon = document.getElementById('signinBtnIcon');
+    const signinSpinner = document.getElementById('signinSpinner');
+
+    if (signinForm) {
+        signinForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if (!signinEmail || !signinEmail.value.trim() || !signinPassword || signinPassword.value.length < 6) {
+                showToast('Please enter a valid email and password.', 'error');
+                return;
+            }
+
+            if (signinBtnText) signinBtnText.textContent = 'Signing In...';
+            if (signinBtnIcon) signinBtnIcon.classList.add('hidden');
+            if (signinSpinner) signinSpinner.classList.remove('hidden');
+            if (signinBtn) signinBtn.disabled = true;
+
+            setTimeout(() => {
+                const userEmail = signinEmail.value.trim();
+                const photoUrlInput = document.getElementById('photoUrl');
+                const userName = userEmail.split('@')[0].replace(/[._]/g, ' ');
+                const formattedName = userName.charAt(0).toUpperCase() + userName.slice(1);
+
+                const userSession = {
+                    name: formattedName,
+                    email: userEmail,
+                    photoUrl: photoUrlInput ? photoUrlInput.value.trim() : '',
+                    avatar: formattedName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+                };
+
+                localStorage.setItem('nexus_user', JSON.stringify(userSession));
+                sessionStorage.setItem('nexus_just_logged_in', 'true');
+
+                showToast(`Welcome back, ${userSession.name}! Redirecting to home...`, 'success');
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            }, 1000);
+        });
+    }
+
+    // 5. Registration Form Handler
+    const regForm = document.getElementById('registrationForm');
+    const fullnameInput = document.getElementById('fullname');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirmPassword');
+    const termsCheck = document.getElementById('termsCheck');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnIcon = document.getElementById('btnIcon');
+    const btnSpinner = document.getElementById('btnSpinner');
+
+    if (regForm) {
+        regForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if (!fullnameInput || fullnameInput.value.trim().length < 3) {
+                showToast('Please enter your full name (at least 3 characters).', 'error');
+                return;
+            }
+            if (!emailInput || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim())) {
+                showToast('Please enter a valid work email address.', 'error');
+                return;
+            }
+            if (!passwordInput || passwordInput.value.length < 8) {
+                showToast('Password must be at least 8 characters long.', 'error');
+                return;
+            }
+            if (!termsCheck || !termsCheck.checked) {
+                showToast('You must agree to the Terms of Service.', 'error');
+                return;
+            }
+
+            if (btnText) btnText.textContent = 'Creating Account...';
+            if (btnIcon) btnIcon.classList.add('hidden');
+            if (btnSpinner) btnSpinner.classList.remove('hidden');
+            if (submitBtn) submitBtn.disabled = true;
+
+            setTimeout(() => {
+                showToast('Registration successful! Redirecting to Sign In...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'signin.html?registered=true';
+                }, 1200);
+            }, 1000);
+        });
+    }
+
+    // 6. Mobile Menu Toggle
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
     const menuIcon = document.getElementById('menuIcon');
@@ -137,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. Sticky Navbar & Active Section Highlight on Scroll
+    // 7. Sticky Navbar & Active Section Highlight on Scroll
     const navbar = document.getElementById('navbar');
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('section[id]');
@@ -168,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 6. Interactive Feature Tabs Switcher
+    // 8. Interactive Feature Tabs Switcher
     const featureTabs = document.querySelectorAll('.feature-tab');
     const tabContents = document.querySelectorAll('.tab-content');
 
@@ -187,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 7. Scroll Triggered Animated Metrics Counter (API & Dynamic Count Fix)
+    // 9. Scroll Triggered Animated Metrics Counter
     const counters = document.querySelectorAll('.counter');
     let hasAnimatedCounters = false;
 
@@ -227,7 +331,6 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(metricsSection);
     }
     
-    // Fallback trigger to guarantee counters never stay at 0 on live site
     setTimeout(() => {
         if (!hasAnimatedCounters) {
             hasAnimatedCounters = true;
@@ -235,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 1200);
 
-    // 8. Pricing Billing Cycle Toggle (Monthly vs Annual)
+    // 10. Pricing Billing Cycle Toggle (Monthly vs Annual)
     const pricingToggle = document.getElementById('pricingToggle');
     const toggleDot = document.getElementById('toggleDot');
     const monthlyLabel = document.getElementById('monthlyLabel');
@@ -284,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 9. FAQ Accordion Toggle
+    // 11. FAQ Accordion Toggle
     const faqToggles = document.querySelectorAll('.faq-toggle');
 
     faqToggles.forEach(toggle => {
@@ -306,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 10. Newsletter Form Submission Handler
+    // 12. Newsletter Form Submission Handler
     const newsletterForm = document.getElementById('newsletterForm');
     const newsletterSuccess = document.getElementById('newsletterSuccess');
 
