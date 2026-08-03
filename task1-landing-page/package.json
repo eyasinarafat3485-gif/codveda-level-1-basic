@@ -1,0 +1,14 @@
+{
+  "name": "task1-landing-page",
+  "version": "1.0.0",
+  "description": "SaaS Landing Page - NexusAI",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y http-server . -p 3000 -o",
+    "start": "npx -y http-server . -p 3000 -o",
+    "serve": "npx -y http-server . -p 3000 -o"
+  },
+  "keywords": ["saas", "landing-page", "tailwind", "vanillajs"],
+  "author": "",
+  "license": "MIT"
+}

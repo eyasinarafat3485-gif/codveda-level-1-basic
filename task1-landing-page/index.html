@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusAI - Modern Workflow & Automation Platform</title>
+    <meta name="description"
+        content="NexusAI empowers modern engineering and product teams to automate workflows, analyze performance, and scale operations effortlessly.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Tailwind CSS CDN with custom config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                            950: '#1e1b4b',
+                        },
+                        accent: {
+                            cyan: '#06b6d4',
+                            emerald: '#10b981',
+                            purple: '#a855f7',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'gradient-x': 'gradient-x 8s ease infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' },
+                        },
+                        'gradient-x': {
+                            '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
+                            '50%': { 'background-size': '200% 200%', 'background-position': 'right center' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body
+    class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-brand-500 selection:text-white transition-colors duration-300">
+
+    <!-- Sticky Navigation Bar -->
+    <header id="navbar"
+        class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div
+                    class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-accent-purple to-accent-cyan flex items-center justify-center shadow-lg shadow-brand-500/25 group-hover:scale-105 transition-transform">
+                    <i data-lucide="zap" class="w-6 h-6 text-white fill-white"></i>
+                </div>
+                <span
+                    class="text-xl font-bold bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">Nexus<span
+                        class="text-brand-400">AI</span></span>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="#features"
+                    class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors relative py-1">Features</a>
+                <!-- <a href="#how-it-works" class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors relative py-1">How it Works</a> -->
+                <a href="#metrics"
+                    class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors relative py-1">Impact</a>
+                <a href="#pricing"
+                    class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors relative py-1">Pricing</a>
+                <a href="#testimonials"
+                    class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors relative py-1">Testimonials</a>
+                <a href="#faq"
+                    class="nav-link text-sm font-medium text-slate-300 hover:text-white transition-colors relative py-1">FAQ</a>
+            </nav>
+
+            <!-- Actions -->
+            <div class="hidden md:flex items-center gap-4">
+                <a href="#pricing"
+                    class="text-sm font-semibold text-slate-300 hover:text-white px-4 py-2.5 rounded-xl hover:bg-slate-900 transition-all">Sign
+                    In</a>
+                <a href="#pricing"
+                    class="relative group inline-flex items-center justify-center p-0.5 overflow-hidden rounded-xl font-semibold text-sm">
+                    <span
+                        class="absolute inset-0 w-full h-full bg-gradient-to-r from-brand-500 via-accent-purple to-accent-cyan group-hover:bg-gradient-to-r group-hover:from-brand-600 group-hover:to-accent-cyan transition-all"></span>
+                    <span
+                        class="relative px-5 py-2 transition-all ease-in duration-75 bg-slate-950 rounded-[10px] group-hover:bg-opacity-0 text-white flex items-center gap-2">
+                        Start Free Trial
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </span>
+                </a>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <div class="flex items-center gap-3 md:hidden">
+                <button id="mobileMenuBtn" aria-label="Open mobile menu"
+                    class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-900 transition-colors">
+                    <i data-lucide="menu" id="menuIcon" class="w-6 h-6"></i>
+                    <i data-lucide="x" id="closeIcon" class="w-6 h-6 hidden"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Slide Drawer -->
+        <div id="mobileMenu"
+            class="hidden md:hidden border-b border-slate-800 bg-slate-950/95 backdrop-blur-xl px-6 py-6 space-y-4">
+            <a href="#features"
+                class="mobile-link block text-slate-300 hover:text-white text-base font-medium">Features</a>
+            <a href="#how-it-works" class="mobile-link block text-slate-300 hover:text-white text-base font-medium">How
+                it Works</a>
+            <a href="#metrics"
+                class="mobile-link block text-slate-300 hover:text-white text-base font-medium">Impact</a>
+            <a href="#pricing"
+                class="mobile-link block text-slate-300 hover:text-white text-base font-medium">Pricing</a>
+            <a href="#testimonials"
+                class="mobile-link block text-slate-300 hover:text-white text-base font-medium">Testimonials</a>
+            <a href="#faq" class="mobile-link block text-slate-300 hover:text-white text-base font-medium">FAQ</a>
+            <div class="pt-4 border-t border-slate-800 flex flex-col gap-3">
+                <a href="#pricing"
+                    class="w-full text-center py-2.5 text-slate-300 hover:text-white font-medium border border-slate-800 rounded-xl">Sign
+                    In</a>
+                <a href="#pricing"
+                    class="w-full text-center py-2.5 bg-gradient-to-r from-brand-600 to-accent-purple text-white font-semibold rounded-xl shadow-lg shadow-brand-500/25">Start
+                    Free Trial</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="relative pt-24 overflow-hidden">
+        <!-- Background Glowing Orbs -->
+        <div
+            class="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-brand-600/20 via-accent-purple/20 to-accent-cyan/10 blur-[120px] rounded-full pointer-events-none -z-10">
+        </div>
+        <div
+            class="absolute top-96 right-0 w-[400px] h-[400px] bg-brand-500/10 blur-[100px] rounded-full pointer-events-none -z-10">
+        </div>
+
+        <!-- HERO SECTION -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20 text-center relative">
+            <!-- Announcement Badge -->
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/90 border border-brand-500/30 text-xs font-semibold text-brand-300 shadow-xl mb-8 hover:border-brand-400 transition-colors group">
+                <span class="flex h-2 w-2 relative">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+                </span>
+                <span>Nexus Engine v2.5 Released</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform"></i>
+            </div>
+
+            <!-- Hero Headline -->
+            <h1
+                class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight max-w-5xl mx-auto leading-[1.1] mb-6">
+                Automate operations with <br class="hidden sm:inline">
+                <span
+                    class="bg-gradient-to-r from-brand-400 via-accent-purple to-accent-cyan bg-clip-text text-transparent animate-gradient-x">AI-Powered
+                    Workflows</span>
+            </h1>
+
+            <!-- Hero Subtitle -->
+            <p class="text-lg sm:text-xl text-slate-400 max-w-3xl mx-auto mb-10 leading-relaxed font-normal">
+                Eliminate manual tasks, orchestrate complex data pipelines, and give your modern team superpower
+                capabilities in a single unified workspace.
+            </p>
+
+            <!-- Dual CTA Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+                <a href="#pricing"
+                    class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-brand-600 to-accent-purple hover:from-brand-500 hover:to-accent-purple text-white font-semibold rounded-2xl shadow-xl shadow-brand-500/25 flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-[0.98]">
+                    <span>Start 14-Day Free Trial</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </a>
+                <button id="faq-icon"
+                    class="w-full sm:w-auto px-8 py-4 bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800 text-slate-200 font-semibold rounded-2xl flex items-center justify-center gap-3 backdrop-blur-sm transition-all">
+
+                    <span>Frequently Asked Questions</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Live Interactive App Dashboard Mockup -->
+            <div
+                class="relative max-w-5xl mx-auto rounded-3xl border border-slate-800/80 bg-slate-900/60 p-2 sm:p-4 shadow-2xl backdrop-blur-md animate-float">
+                <div class="rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 text-left">
+                    <!-- Dashboard Header Control Bar -->
+                    <div class="px-4 py-3 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                            <span class="ml-2 text-xs font-mono text-slate-400">nexus-dashboard.internal.app</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-xs text-slate-400 font-medium">
+                            <span
+                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                Live Sync Active
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Body -->
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Stat Card 1 -->
+                        <div class="bg-slate-900/70 border border-slate-800/60 rounded-xl p-4">
+                            <div class="flex items-center justify-between text-slate-400 mb-2">
+                                <span class="text-xs font-medium">Automated Tasks</span>
+                                <i data-lucide="cpu" class="w-4 h-4 text-brand-400"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-white">1,482,920</div>
+                            <div class="text-xs text-emerald-400 mt-1 flex items-center gap-1">
+                                <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
+                                +28.4% from last month
+                            </div>
+                        </div>
+
+                        <!-- Stat Card 2 -->
+                        <div class="bg-slate-900/70 border border-slate-800/60 rounded-xl p-4">
+                            <div class="flex items-center justify-between text-slate-400 mb-2">
+                                <span class="text-xs font-medium">Latency Reduction</span>
+                                <i data-lucide="zap" class="w-4 h-4 text-accent-cyan"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-white">42ms avg</div>
+                            <div class="text-xs text-emerald-400 mt-1 flex items-center gap-1">
+                                <i data-lucide="trending-down" class="w-3.5 h-3.5"></i>
+                                -65% response latency
+                            </div>
+                        </div>
+
+                        <!-- Stat Card 3 -->
+                        <div class="bg-slate-900/70 border border-slate-800/60 rounded-xl p-4">
+                            <div class="flex items-center justify-between text-slate-400 mb-2">
+                                <span class="text-xs font-medium">Active Pipelines</span>
+                                <i data-lucide="git-branch" class="w-4 h-4 text-accent-purple"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-white">342 Active</div>
+                            <div class="text-xs text-brand-300 mt-1 flex items-center gap-1">
+                                <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                                99.99% Execution Health
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Workflow Visual Graph -->
+                    <div class="px-6 pb-6">
+                        <div class="bg-slate-900/40 border border-slate-800 rounded-xl p-4">
+                            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Live
+                                Pipeline Execution</div>
+                            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div
+                                    class="flex items-center gap-3 bg-slate-950 p-3 rounded-lg border border-slate-800 w-full sm:w-auto">
+                                    <div class="p-2 rounded bg-brand-500/10 text-brand-400"><i data-lucide="database"
+                                            class="w-5 h-5"></i></div>
+                                    <div>
+                                        <div class="text-xs font-semibold text-white">WebHook Event</div>
+                                        <div class="text-[10px] text-slate-400">PostgreSQL Stream</div>
+                                    </div>
+                                </div>
+                                <div class="hidden sm:block text-slate-600"><i data-lucide="arrow-right"
+                                        class="w-5 h-5"></i></div>
+                                <div
+                                    class="flex items-center gap-3 bg-slate-950 p-3 rounded-lg border border-slate-800 w-full sm:w-auto">
+                                    <div class="p-2 rounded bg-accent-purple/10 text-accent-purple"><i
+                                            data-lucide="sparkles" class="w-5 h-5"></i></div>
+                                    <div>
+                                        <div class="text-xs font-semibold text-white">AI Processing Node</div>
+                                        <div class="text-[10px] text-slate-400">LLM Inference & Filter</div>
+                                    </div>
+                                </div>
+                                <div class="hidden sm:block text-slate-600"><i data-lucide="arrow-right"
+                                        class="w-5 h-5"></i></div>
+                                <div
+                                    class="flex items-center gap-3 bg-slate-950 p-3 rounded-lg border border-slate-800 w-full sm:w-auto">
+                                    <div class="p-2 rounded bg-emerald-500/10 text-emerald-400"><i data-lucide="send"
+                                            class="w-5 h-5"></i></div>
+                                    <div>
+                                        <div class="text-xs font-semibold text-white">Destination Sync</div>
+                                        <div class="text-[10px] text-slate-400">Slack & Salesforce</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BRAND LOGOS / SOCIAL PROOF -->
+        <section class=" bg-slate-950/40 py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-8">Trusted by 50,000+
+                    engineers & leaders at forward-thinking companies</p>
+                <div
+                    class="grid grid-cols-2 md:grid-cols-5 gap-8 items-center opacity-75 grayscale hover:grayscale-0 transition-all duration-500">
+                    <div
+                        class="flex items-center justify-center font-bold text-xl text-slate-400 hover:text-white transition-colors">
+                        <i data-lucide="layers" class="mr-2 w-6 h-6"></i> LinearFlow
+                    </div>
+                    <div
+                        class="flex items-center justify-center font-bold text-xl text-slate-400 hover:text-white transition-colors">
+                        <i data-lucide="command" class="mr-2 w-6 h-6"></i> QuantumScale
+                    </div>
+                    <div
+                        class="flex items-center justify-center font-bold text-xl text-slate-400 hover:text-white transition-colors">
+                        <i data-lucide="activity" class="mr-2 w-6 h-6"></i> PulseStack
+                    </div>
+                    <div
+                        class="flex items-center justify-center font-bold text-xl text-slate-400 hover:text-white transition-colors">
+                        <i data-lucide="shield-check" class="mr-2 w-6 h-6"></i> VaultGuard
+                    </div>
+                    <div
+                        class="flex items-center justify-center font-bold text-xl text-slate-400 hover:text-white transition-colors col-span-2 md:col-span-1">
+                        <i data-lucide="globe-2" class="mr-2 w-6 h-6"></i> HyperCloud
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERACTIVE FEATURES SECTION -->
+        <section id="features" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brand-400 mb-3">Enterprise Core Features
+                </h2>
+                <p class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Everything you need to
+                    orchestrate at scale</p>
+                <p class="text-slate-400 mt-4 text-base sm:text-lg">Designed from the ground up for modern developer
+                    efficiency and seamless team collaboration.</p>
+            </div>
+
+            <!-- Feature Tabs Header -->
+            <div class="flex justify-center mb-12 overflow-x-auto pb-2 scrollbar-none">
+                <div class="flex gap-2 p-1.5 rounded-2xl bg-slate-900 border border-slate-800 text-sm">
+                    <button
+                        class="feature-tab active px-5 py-2.5 rounded-xl font-medium transition-all text-slate-300 hover:text-white"
+                        data-target="tab-analytics">
+                        <i data-lucide="line-chart" class="w-4 h-4 inline mr-2"></i>Real-time Analytics
+                    </button>
+                    <button
+                        class="feature-tab px-5 py-2.5 rounded-xl font-medium transition-all text-slate-300 hover:text-white"
+                        data-target="tab-automation">
+                        <i data-lucide="bot" class="w-4 h-4 inline mr-2"></i>AI Automation
+                    </button>
+                    <button
+                        class="feature-tab px-5 py-2.5 rounded-xl font-medium transition-all text-slate-300 hover:text-white"
+                        data-target="tab-security">
+                        <i data-lucide="lock" class="w-4 h-4 inline mr-2"></i>Zero-Trust Security
+                    </button>
+                    <button
+                        class="feature-tab px-5 py-2.5 rounded-xl font-medium transition-all text-slate-300 hover:text-white"
+                        data-target="tab-integrations">
+                        <i data-lucide="plug" class="w-4 h-4 inline mr-2"></i>200+ Integrations
+                    </button>
+                </div>
+            </div>
+
+            <!-- Feature Tab Contents -->
+            <div class="relative">
+                <!-- Tab 1 Content -->
+                <div id="tab-analytics" class="tab-content block transition-opacity duration-300">
+                    <div
+                        class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-slate-900/40 border border-slate-800 rounded-3xl p-8 lg:p-12 backdrop-blur-sm">
+                        <div>
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-400 mb-6">
+                                <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-2xl sm:text-3xl font-bold text-white mb-4">Deep Telemetry & Live Performance
+                                Analytics</h3>
+                            <p class="text-slate-400 mb-6 leading-relaxed">Gain immediate visibility into execution
+                                times, bottleneck stages, and resource allocation across all distributed pipelines.</p>
+                            <ul class="space-y-3 mb-8">
+                                <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400 flex-shrink-0"></i>
+                                    Sub-millisecond event tracking & custom alerts
+                                </li>
+                                <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400 flex-shrink-0"></i>
+                                    Automated anomaly detection powered by ML models
+                                </li>
+                                <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400 flex-shrink-0"></i>
+                                    Exportable CSV/JSON reports and Prometheus endpoints
+                                </li>
+                            </ul>
+                            <a href="#pricing"
+                                class="inline-flex items-center text-brand-400 font-semibold hover:text-brand-300 group">
+                                Learn more about Analytics <i data-lucide="arrow-right"
+                                    class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-2xl">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
+                                <span class="text-xs font-semibold text-slate-400">Live Traffic Throughput</span>
+                                <span class="text-xs font-mono text-emerald-400">● 99.98% Healthy</span>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                        <span>US-East Worker Nodes</span>
+                                        <span>88% Load</span>
+                                    </div>
+                                    <div class="h-2 rounded-full bg-slate-900 overflow-hidden">
+                                        <div
+                                            class="h-full bg-gradient-to-r from-brand-500 to-accent-cyan w-[88%] rounded-full">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                        <span>EU-Central Processing</span>
+                                        <span>42% Load</span>
+                                    </div>
+                                    <div class="h-2 rounded-full bg-slate-900 overflow-hidden">
+                                        <div
+                                            class="h-full bg-gradient-to-r from-brand-500 to-accent-purple w-[42%] rounded-full">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                        <span>AP-South Edge Gateways</span>
+                                        <span>64% Load</span>
+                                    </div>
+                                    <div class="h-2 rounded-full bg-slate-900 overflow-hidden">
+                                        <div
+                                            class="h-full bg-gradient-to-r from-brand-500 to-emerald-400 w-[64%] rounded-full">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2 Content -->
+                <div id="tab-automation" class="tab-content hidden transition-opacity duration-300">
+                    <div
+                        class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-slate-900/40 border border-slate-800 rounded-3xl p-8 lg:p-12 backdrop-blur-sm">
+                        <div>
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-accent-purple/10 border border-accent-purple/30 flex items-center justify-center text-accent-purple mb-6">
+                                <i data-lucide="sparkles" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-2xl sm:text-3xl font-bold text-white mb-4">Autonomous AI Execution Agents
+                            </h3>
+                            <p class="text-slate-400 mb-6 leading-relaxed">Deploy self-healing automation workflows that
+                                interpret unstructured inputs and handle error retries autonomously.</p>
+                            <ul class="space-y-3 mb-8">
+                                <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400 flex-shrink-0"></i>
+                                    Natural language workflow generator
+                                </li>
+                                <li class="flex items-center gap-3 text-slate-300 text-sm">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400 flex-shrink-0"></i>
+                                    Smart retry & fallbacks without breaking pipeline
+                                </li>
+                            </ul>
+                        </div>
+                        <div
+                            class="bg-slate-950 border border-slate-800 rounded-2xl p-6 font-mono text-xs text-slate-300 space-y-2">
+                            <div class="text-slate-500">// AI Workflow Definition</div>
+                            <div class="text-brand-400">workflow <span class="text-white">CustomerOnboarding</span> {
+                            </div>
+                            <div class="pl-4 text-slate-300">trigger: <span
+                                    class="text-accent-cyan">onUserSignUp</span>,</div>
+                            <div class="pl-4 text-slate-300">step1: <span
+                                    class="text-accent-purple">verifyIdentity</span>(),</div>
+                            <div class="pl-4 text-slate-300">step2: <span
+                                    class="text-emerald-400">provisionResources</span>({ region: "us-east" })</div>
+                            <div class="text-brand-400">}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3 Content -->
+                <div id="tab-security" class="tab-content hidden transition-opacity duration-300">
+                    <div
+                        class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-slate-900/40 border border-slate-800 rounded-3xl p-8 lg:p-12 backdrop-blur-sm">
+                        <div>
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-6">
+                                <i data-lucide="shield" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-2xl sm:text-3xl font-bold text-white mb-4">Bank-Grade Zero-Trust Security
+                            </h3>
+                            <p class="text-slate-400 mb-6 leading-relaxed">End-to-end AES-256 encryption at rest and in
+                                transit. SOC2 Type II and HIPAA compliant architecture built for enterprise safety.</p>
+                        </div>
+                        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-8 text-center">
+                            <i data-lucide="shield-check"
+                                class="w-16 h-16 text-emerald-400 mx-auto mb-4 animate-pulse-slow"></i>
+                            <div class="text-lg font-bold text-white">SOC2 Type II Certified</div>
+                            <div class="text-xs text-slate-400 mt-2">Continuous automated security audits & automated
+                                vulnerability scanning.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4 Content -->
+                <div id="tab-integrations" class="tab-content hidden transition-opacity duration-300">
+                    <div
+                        class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-slate-900/40 border border-slate-800 rounded-3xl p-8 lg:p-12 backdrop-blur-sm">
+                        <div>
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-accent-cyan/10 border border-accent-cyan/30 flex items-center justify-center text-accent-cyan mb-6">
+                                <i data-lucide="cpu" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-2xl sm:text-3xl font-bold text-white mb-4">Connect with any stack in seconds
+                            </h3>
+                            <p class="text-slate-400 mb-6 leading-relaxed">Pre-built native connectors for GitHub,
+                                Slack, AWS, Snowflake, Salesforce, PostgreSQL, and GraphQL.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div
+                                class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-center font-semibold text-slate-300 hover:text-white hover:border-slate-700 transition-all">
+                                <i data-lucide="github" class="w-8 h-8 mx-auto mb-2 text-white"></i> GitHub
+                            </div>
+                            <div
+                                class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-center font-semibold text-slate-300 hover:text-white hover:border-slate-700 transition-all">
+                                <i data-lucide="slack" class="w-8 h-8 mx-auto mb-2 text-accent-cyan"></i> Slack
+                            </div>
+                            <div
+                                class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-center font-semibold text-slate-300 hover:text-white hover:border-slate-700 transition-all">
+                                <i data-lucide="cloud" class="w-8 h-8 mx-auto mb-2 text-brand-400"></i> AWS
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- IMPACT & METRICS (SCROLL ANIMATED COUNTERS) -->
+        <section id="metrics" class="py-20 border-y border-slate-800 bg-slate-900/30 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div class="p-6">
+                        <div class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-2 counter"
+                            data-target="99.99">0</div>
+                        <div class="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-400">Uptime SLA
+                            (%)</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-2 counter"
+                            data-target="100">0</div>
+                        <div class="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-400">M+ Daily
+                            Events</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-2 counter"
+                            data-target="14">0</div>
+                        <div class="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-400">ms Global
+                            Latency</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-2 counter"
+                            data-target="50">0</div>
+                        <div class="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-400">K+ Active
+                            Teams</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRICING SECTION WITH BILLING TOGGLE -->
+        <section id="pricing" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brand-400 mb-3">Transparent Pricing</h2>
+                <p class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Flexible plans for teams of all
+                    sizes</p>
+                <p class="text-slate-400 mt-4 text-base sm:text-lg">No hidden fees. Start free and scale as your
+                    automation demands grow.</p>
+
+                <!-- Billing Cycle Toggle Switch -->
+                <div class="flex items-center justify-center gap-4 mt-8">
+                    <span id="monthlyLabel" class="text-sm font-semibold text-white">Monthly Billing</span>
+                    <button id="pricingToggle" aria-label="Toggle pricing billing cycle"
+                        class="w-14 h-8 rounded-full bg-slate-800 border border-slate-700 p-1 flex items-center transition-colors relative focus:outline-none">
+                        <div id="toggleDot"
+                            class="w-6 h-6 rounded-full bg-brand-500 transition-transform transform translate-x-0 shadow-md">
+                        </div>
+                    </button>
+                    <span id="annualLabel" class="text-sm font-semibold text-slate-400 flex items-center gap-2">
+                        Annual Billing
+                        <span
+                            class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-xs border border-emerald-500/30">Save
+                            20%</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Pricing Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Starter Tier -->
+                <div
+                    class="rounded-3xl bg-slate-900/50 border border-slate-800 p-8 flex flex-col justify-between hover:border-slate-700 transition-all">
+                    <div>
+                        <div class="text-lg font-bold text-white mb-2">Starter</div>
+                        <p class="text-slate-400 text-xs mb-6">Ideal for individual developers & indie hackers.</p>
+                        <div class="flex items-baseline gap-1 mb-6">
+                            <span class="text-4xl font-extrabold text-white price-value" data-monthly="0"
+                                data-annual="0">$0</span>
+                            <span class="text-slate-400 text-xs">/ forever free</span>
+                        </div>
+                        <ul class="space-y-3 text-sm text-slate-300 mb-8">
+                            <li class="flex items-center gap-3"><i data-lucide="check"
+                                    class="w-4 h-4 text-brand-400"></i> 10,000 tasks / month</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check"
+                                    class="w-4 h-4 text-brand-400"></i> Up to 3 active workflows</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check"
+                                    class="w-4 h-4 text-brand-400"></i> Community Slack Support</li>
+                            <li class="flex items-center gap-3 text-slate-500"><i data-lucide="x" class="w-4 h-4"></i>
+                                AI Execution Agent</li>
+                        </ul>
+                    </div>
+                    <button
+                        class="w-full py-3 rounded-xl border border-slate-700 text-white font-semibold hover:bg-slate-800 transition-colors">Get
+                        Started Free</button>
+                </div>
+
+                <!-- Pro Tier (Popular Highlighted) -->
+                <div
+                    class="relative rounded-3xl bg-slate-900/90 border-2 border-brand-500 p-8 flex flex-col justify-between shadow-2xl shadow-brand-500/10">
+                    <div
+                        class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-brand-500 to-accent-purple text-xs font-bold text-white uppercase tracking-wider shadow-lg">
+                        Most Popular
+                    </div>
+                    <div>
+                        <div class="text-lg font-bold text-white mb-2">Pro Team</div>
+                        <p class="text-slate-400 text-xs mb-6">For growing startup teams scaling operations.</p>
+                        <div class="flex items-baseline gap-1 mb-6">
+                            <span class="text-4xl font-extrabold text-white price-value" data-monthly="49"
+                                data-annual="39">$49</span>
+                            <span class="text-slate-400 text-xs">/ user / month</span>
+                        </div>
+                        <ul class="space-y-3 text-sm text-slate-300 mb-8">
+                            <li class="flex items-center gap-3"><i data-lucide="check"
+                                    class="w-4 h-4 text-brand-400"></i> 500,000 tasks / month</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check"
+                                    class="w-4 h-4 text-brand-400"></i> Unlimited active workflows</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check"
+                                    class="w-4 h-4 text-brand-400"></i> AI Agent Assistance</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check"
+                                    class="w-4 h-4 text-brand-400"></i> Priority 24/7 Email Support</li>
+                        </ul>
+                    </div>
+                    <button
+                        class="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 to-accent-purple text-white font-semibold shadow-lg hover:opacity-95 transition-opacity">Start
+                        14-Day Trial</button>
+                </div>
+
+                <!-- Enterprise Tier -->
+                <div
+                    class="rounded-3xl bg-slate-900/50 border border-slate-800 p-8 flex flex-col justify-between hover:border-slate-700 transition-all">
+                    <div>
+                        <div class="text-lg font-bold text-white mb-2">Enterprise</div>
+                        <p class="text-slate-400 text-xs mb-6">Custom infrastructure, SLA guarantees & dedicated
+                            support.</p>
+                        <div class="flex items-baseline gap-1 mb-6">
+                            <span class="text-4xl font-extrabold text-white price-value" data-monthly="199"
+                                data-annual="159">$199</span>
+                            <span class="text-slate-400 text-xs">/ starting / month</span>
+                        </div>
+                        <ul class="space-y-3 text-sm text-slate-300 mb-8">
+                            <li class="flex items-center gap-3"><i data-lucide="check"
+                                    class="w-4 h-4 text-brand-400"></i> Unlimited tasks & volume</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check"
+                                    class="w-4 h-4 text-brand-400"></i> Custom VPC & On-Prem deploy</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check"
+                                    class="w-4 h-4 text-brand-400"></i> Dedicated Solutions Architect</li>
+                            <li class="flex items-center gap-3"><i data-lucide="check"
+                                    class="w-4 h-4 text-brand-400"></i> 99.99% Uptime Guarantee</li>
+                        </ul>
+                    </div>
+                    <button
+                        class="w-full py-3 rounded-xl border border-slate-700 text-white font-semibold hover:bg-slate-800 transition-colors">Contact
+                        Sales</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIALS SECTION -->
+        <section id="testimonials" class="py-24 bg-slate-950/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-brand-400 mb-3">Customer Stories</h2>
+                    <p class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Loved by high-performing
+                        teams</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Testimonial 1 -->
+                    <div
+                        class="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 flex flex-col justify-between hover:border-brand-500/50 transition-all">
+                        <div>
+                            <div class="flex items-center gap-1 text-amber-400 mb-4">
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-6">"NexusAI reduced our engineering
+                                team's manual data pipelines by 80%. What used to take days of cron script maintenance
+                                now executes autonomously."</p>
+                        </div>
+                        <div class="flex items-center gap-4 pt-4 border-t border-slate-800">
+                            <div
+                                class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-500 to-accent-cyan flex items-center justify-center font-bold text-white">
+                                SA
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-white">Sarah Al-Mansoor</div>
+                                <div class="text-xs text-slate-400">Head of Platform, CloudScale</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 2 -->
+                    <div
+                        class="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 flex flex-col justify-between hover:border-brand-500/50 transition-all">
+                        <div>
+                            <div class="flex items-center gap-1 text-amber-400 mb-4">
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-6">"The real-time observability and AI
+                                error healing mean we sleep peacefully through the night. It's the most reliable
+                                developer tool in our stack."</p>
+                        </div>
+                        <div class="flex items-center gap-4 pt-4 border-t border-slate-800">
+                            <div
+                                class="w-10 h-10 rounded-full bg-gradient-to-tr from-accent-purple to-pink-500 flex items-center justify-center font-bold text-white">
+                                MK
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-white">Marcus Chen</div>
+                                <div class="text-xs text-slate-400">VP of Engineering, DataPulse</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 3 -->
+                    <div
+                        class="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 flex flex-col justify-between hover:border-brand-500/50 transition-all">
+                        <div>
+                            <div class="flex items-center gap-1 text-amber-400 mb-4">
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-6">"Setting up custom integrations took
+                                literally 5 minutes. The developer UX and interactive dashboard are unrivaled."</p>
+                        </div>
+                        <div class="flex items-center gap-4 pt-4 border-t border-slate-800">
+                            <div
+                                class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center font-bold text-white">
+                                ER
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-white">Elena Rostova</div>
+                                <div class="text-xs text-slate-400">CTO, NexusFintech</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ ACCORDION SECTION -->
+        <section id="faq" class="py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brand-400 mb-3">Got Questions?</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Frequently Asked Questions</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ Item 1 -->
+                <div class="faq-item border border-slate-800 rounded-2xl bg-slate-900/40 overflow-hidden">
+                    <button
+                        class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left font-semibold text-white hover:text-brand-300 transition-colors">
+                        <span>How does the 14-day free trial work?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div
+                        class="faq-answer hidden px-6 pb-5 text-sm text-slate-400 leading-relaxed border-t border-slate-800/50 pt-3">
+                        You get instant, full access to all Pro features for 14 days without entering a credit card. At
+                        the end of your trial, you can choose to subscribe or downgrade to the forever free plan.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="faq-item border border-slate-800 rounded-2xl bg-slate-900/40 overflow-hidden">
+                    <button
+                        class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left font-semibold text-white hover:text-brand-300 transition-colors">
+                        <span>Can I deploy NexusAI on self-hosted or VPC infrastructure?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div
+                        class="faq-answer hidden px-6 pb-5 text-sm text-slate-400 leading-relaxed border-t border-slate-800/50 pt-3">
+                        Yes! Our Enterprise tier supports Kubernetes Helm charts, AWS ECS/EKS, Docker Compose, and
+                        on-premises deployment behind your enterprise firewall.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="faq-item border border-slate-800 rounded-2xl bg-slate-900/40 overflow-hidden">
+                    <button
+                        class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left font-semibold text-white hover:text-brand-300 transition-colors">
+                        <span>What security and compliance standards do you adhere to?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div
+                        class="faq-answer hidden px-6 pb-5 text-sm text-slate-400 leading-relaxed border-t border-slate-800/50 pt-3">
+                        We are SOC2 Type II certified, GDPR compliant, and support HIPAA compliance with signed BAAs for
+                        Enterprise customers.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="faq-item border border-slate-800 rounded-2xl bg-slate-900/40 overflow-hidden">
+                    <button
+                        class="faq-toggle w-full px-6 py-5 flex items-center justify-between text-left font-semibold text-white hover:text-brand-300 transition-colors">
+                        <span>Can I cancel or change my plan anytime?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div
+                        class="faq-answer hidden px-6 pb-5 text-sm text-slate-400 leading-relaxed border-t border-slate-800/50 pt-3">
+                        Absolutely. You can upgrade, downgrade, or cancel your subscription at any time directly from
+                        your billing portal with no cancellation penalties.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA & NEWSLETTER BANNER -->
+        <section class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div
+                class="relative rounded-3xl bg-gradient-to-r from-brand-900/80 via-slate-900 to-slate-900 border border-brand-500/30 p-8 sm:p-14 overflow-hidden shadow-2xl">
+                <!-- Background Accent Glow -->
+                <div
+                    class="absolute -right-20 -top-20 w-80 h-80 bg-brand-500/20 blur-[100px] rounded-full pointer-events-none">
+                </div>
+
+                <div class="relative z-10 max-w-2xl">
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">Ready to accelerate
+                        your engineering workflows?</h2>
+                    <p class="text-slate-300 text-base mb-8">Join thousands of engineers building the future of
+                        automated operations. Get started in less than 2 minutes.</p>
+
+                    <form id="newsletterForm" class="flex flex-col sm:flex-row gap-3">
+                        <input type="email" id="newsletterEmail" placeholder="Enter your work email..." required
+                            class="px-5 py-3.5 rounded-xl bg-slate-950/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-brand-400 flex-grow text-sm">
+                        <button type="submit"
+                            class="px-6 py-3.5 bg-gradient-to-r from-brand-500 to-accent-purple hover:from-brand-600 hover:to-accent-purple text-white font-semibold rounded-xl shadow-lg transition-all text-sm flex items-center justify-center gap-2">
+                            <span>Get Started</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+                    <div id="newsletterSuccess"
+                        class="hidden mt-3 text-emerald-400 text-xs font-semibold flex items-center gap-1.5">
+                        <i data-lucide="check-circle-2" class="w-4 h-4"></i> Thank you! Check your inbox for your setup
+                        invite link.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- PROFESSIONAL FOOTER -->
+    <footer class="border-t border-slate-800 bg-slate-950 pt-16 pb-12 text-slate-400 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+                <!-- Brand Column -->
+                <div class="col-span-2">
+                    <a href="#" class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-accent-purple flex items-center justify-center">
+                            <i data-lucide="zap" class="w-5 h-5 text-white fill-white"></i>
+                        </div>
+                        <span class="text-lg font-bold text-white">NexusAI</span>
+                    </a>
+                    <p class="text-slate-400 text-xs max-w-sm mb-6 leading-relaxed">
+                        Autonomous AI workflow orchestration engine built for high-growth technical teams.
+                    </p>
+                    <!-- System Status Indicator -->
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs font-medium text-emerald-400">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        All Systems Operational
+                    </div>
+                </div>
+
+                <!-- Column 2: Product -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-200 mb-4">Product</h3>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#metrics" class="hover:text-white transition-colors">Telemetry</a></li>
+                        <li><a href="#pricing" class="hover:text-white transition-colors">Pricing Tier</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Changelog v2.5</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Roadmap</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Resources -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-200 mb-4">Resources</h3>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="#" class="hover:text-white transition-colors">Documentation</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">API Reference</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">SDK Libraries</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Community Forum</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Status Page</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Company -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-200 mb-4">Company</h3>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div
+                class="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                <div>© 2026 NexusAI Inc. All rights reserved.</div>
+                <div class="flex items-center gap-6">
+                    <a href="#" aria-label="Twitter" class="hover:text-slate-300 transition-colors"><i
+                            data-lucide="twitter" class="w-4 h-4"></i></a>
+                    <a href="#" aria-label="GitHub" class="hover:text-slate-300 transition-colors"><i
+                            data-lucide="github" class="w-4 h-4"></i></a>
+                    <a href="#" aria-label="Linkedin" class="hover:text-slate-300 transition-colors"><i
+                            data-lucide="linkedin" class="w-4 h-4"></i></a>
+                    <a href="#" aria-label="Youtube" class="hover:text-slate-300 transition-colors"><i
+                            data-lucide="youtube" class="w-4 h-4"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS Script -->
+    <script src="script.js"></script>
+</body>
+
+</html>

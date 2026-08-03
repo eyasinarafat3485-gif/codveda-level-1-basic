@@ -1,0 +1,14 @@
+{
+  "name": "task2-interactive-form",
+  "version": "1.0.0",
+  "description": "Interactive Registration Form - Nexus Portal",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y http-server . -p 3001 -o",
+    "start": "npx -y http-server . -p 3001 -o",
+    "serve": "npx -y http-server . -p 3001 -o"
+  },
+  "keywords": ["interactive-form", "validation", "tailwind", "vanillajs"],
+  "author": "",
+  "license": "MIT"
+}

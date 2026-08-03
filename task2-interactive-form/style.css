@@ -1,0 +1,37 @@
+/* Additional Custom CSS for Task 2 Interactive Form */
+
+/* Input wrapper glow effects on focus */
+.input-wrapper.focus-glow {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+.input-wrapper.valid-glow {
+    border-color: #10b981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+}
+
+.input-wrapper.invalid-glow {
+    border-color: #f43f5e;
+    box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.2);
+}
+
+/* Custom Role Card radio select styles */
+.role-card input:checked + i + span,
+.role-card:has(input:checked) {
+    border-color: #6366f1;
+    background-color: rgba(99, 102, 241, 0.1);
+    opacity: 1;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #020617;
+}
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 3px;
+}

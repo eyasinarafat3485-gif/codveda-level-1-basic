@@ -1,0 +1,14 @@
+{
+  "name": "level-1-basic",
+  "version": "1.0.0",
+  "description": "Level 1 Basic Projects - Landing Page and Interactive Form",
+  "scripts": {
+    "dev": "npx -y http-server . -p 8080 -o",
+    "start": "npx -y http-server . -p 8080 -o",
+    "dev:task1": "npm --prefix task1-landing-page run dev",
+    "dev:task2": "npm --prefix task2-interactive-form run dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
