@@ -1,3 +1,5 @@
+'use client';
+
 // Task 1: SaaS Landing Page Script
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,10 +10,99 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     initIcons();
-    // Fallback if Lucide script loads asynchronously
     window.addEventListener('load', initIcons);
 
-    // 2. Mobile Menu Toggle
+    // 2. Toast Notification Helper
+    window.showToast = (message, type = 'success') => {
+        let toastContainer = document.getElementById('toastContainer');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toastContainer';
+            toastContainer.className = 'fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none';
+            document.body.appendChild(toastContainer);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = `pointer-events-auto px-4 py-3 rounded-xl shadow-2xl border text-xs font-semibold flex items-center gap-2.5 transition-all duration-300 transform translate-y-[-10px] opacity-0 ${
+            type === 'success'
+                ? 'bg-slate-900 border-emerald-500/50 text-emerald-400 shadow-emerald-500/10'
+                : 'bg-slate-900 border-rose-500/50 text-rose-400 shadow-rose-500/10'
+        }`;
+
+        const iconName = type === 'success' ? 'check-circle-2' : 'info';
+        toast.innerHTML = `<i data-lucide="${iconName}" class="w-4 h-4 flex-shrink-0"></i> <span>${message}</span>`;
+        toastContainer.appendChild(toast);
+
+        if (typeof lucide !== 'undefined' && lucide.createIcons) {
+            lucide.createIcons();
+        }
+
+        requestAnimationFrame(() => {
+            toast.classList.remove('translate-y-[-10px]', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+        });
+
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-[-10px]', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    };
+
+    // 3. User Authentication State & Navbar Management
+    function checkAuthState() {
+        const loggedOutActions = document.getElementById('loggedOutActions');
+        const loggedInActions = document.getElementById('loggedInActions');
+        const loggedOutActionsMobile = document.getElementById('loggedOutActionsMobile');
+        const loggedInActionsMobile = document.getElementById('loggedInActionsMobile');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userAvatarMobile = document.getElementById('userAvatarMobile');
+        const userNameMobile = document.getElementById('userNameMobile');
+        const userEmailMobile = document.getElementById('userEmailMobile');
+
+        const savedUser = localStorage.getItem('nexus_user');
+
+        if (savedUser) {
+            try {
+                const user = JSON.parse(savedUser);
+                if (loggedOutActions) loggedOutActions.classList.add('hidden');
+                if (loggedInActions) loggedInActions.classList.remove('hidden');
+                if (loggedOutActionsMobile) loggedOutActionsMobile.classList.add('hidden');
+                if (loggedInActionsMobile) loggedInActionsMobile.classList.remove('hidden');
+
+                if (userAvatar) userAvatar.textContent = user.avatar || user.name.charAt(0).toUpperCase();
+                if (userName) userName.textContent = user.name;
+                if (userAvatarMobile) userAvatarMobile.textContent = user.avatar || user.name.charAt(0).toUpperCase();
+                if (userNameMobile) userNameMobile.textContent = user.name;
+                if (userEmailMobile) userEmailMobile.textContent = user.email || '';
+            } catch (e) {
+                console.error('Failed to parse user session', e);
+            }
+        } else {
+            if (loggedOutActions) loggedOutActions.classList.remove('hidden');
+            if (loggedInActions) loggedInActions.classList.add('hidden');
+            if (loggedOutActionsMobile) loggedOutActionsMobile.classList.remove('hidden');
+            if (loggedInActionsMobile) loggedInActionsMobile.classList.add('hidden');
+        }
+    }
+
+    checkAuthState();
+
+    // Sign Out Handlers
+    const signOutBtn = document.getElementById('signOutBtn');
+    const signOutBtnMobile = document.getElementById('signOutBtnMobile');
+
+    function handleSignOut() {
+        localStorage.removeItem('nexus_user');
+        checkAuthState();
+        showToast('Signed out successfully!', 'success');
+    }
+
+    if (signOutBtn) signOutBtn.addEventListener('click', handleSignOut);
+    if (signOutBtnMobile) signOutBtnMobile.addEventListener('click', handleSignOut);
+
+    // 4. Mobile Menu Toggle
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
     const menuIcon = document.getElementById('menuIcon');
@@ -32,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Close mobile menu on clicking any navigation link
         mobileLinks.forEach(link => {
             link.addEventListener('click', () => {
                 mobileMenu.classList.add('hidden');
@@ -42,13 +132,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Sticky Navbar & Active Section Highlight on Scroll
+    // 5. Sticky Navbar & Active Section Highlight on Scroll
     const navbar = document.getElementById('navbar');
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('section[id]');
 
     window.addEventListener('scroll', () => {
-        // Sticky shadow boost on scroll
         if (navbar) {
             if (window.scrollY > 40) {
                 navbar.classList.add('shadow-xl', 'border-slate-800/80');
@@ -57,7 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Active link highlighting based on current scroll position
         let currentSectionId = '';
         sections.forEach(section => {
             const sectionTop = section.offsetTop - 120;
@@ -75,12 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 4. Dark Theme Enforced
-    const htmlElement = document.documentElement;
-    htmlElement.classList.add('dark');
-    htmlElement.classList.remove('light');
-
-    // 5. Interactive Feature Tabs Switcher
+    // 6. Interactive Feature Tabs Switcher
     const featureTabs = document.querySelectorAll('.feature-tab');
     const tabContents = document.querySelectorAll('.tab-content');
 
@@ -88,12 +171,9 @@ document.addEventListener('DOMContentLoaded', () => {
         tab.addEventListener('click', () => {
             const targetId = tab.getAttribute('data-target');
 
-            // Deactivate all tabs
             featureTabs.forEach(t => t.classList.remove('active'));
-            // Hide all tab contents
             tabContents.forEach(c => c.classList.add('hidden'));
 
-            // Activate clicked tab
             tab.classList.add('active');
             const targetContent = document.getElementById(targetId);
             if (targetContent) {
@@ -102,16 +182,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 6. Scroll Triggered Animated Metrics Counter
+    // 7. Scroll Triggered Animated Metrics Counter (API / Count Fix)
     const counters = document.querySelectorAll('.counter');
     let hasAnimatedCounters = false;
 
     const animateCounters = () => {
         counters.forEach(counter => {
-            const target = parseFloat(counter.getAttribute('data-target'));
+            const targetAttr = counter.getAttribute('data-target');
+            const target = parseFloat(targetAttr);
             if (isNaN(target)) return;
+
             const isFloat = target % 1 !== 0;
-            const duration = 2000; // 2 seconds
+            const duration = 2000;
             const steps = 50;
             const stepTime = duration / steps;
             let current = 0;
@@ -142,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
         animateCounters();
     }
 
-    // 7. Pricing Billing Cycle Toggle (Monthly vs Annual)
+    // 8. Pricing Billing Cycle Toggle (Monthly vs Annual)
     const pricingToggle = document.getElementById('pricingToggle');
     const toggleDot = document.getElementById('toggleDot');
     const monthlyLabel = document.getElementById('monthlyLabel');
@@ -191,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 8. FAQ Accordion Toggle
+    // 9. FAQ Accordion Toggle
     const faqToggles = document.querySelectorAll('.faq-toggle');
 
     faqToggles.forEach(toggle => {
@@ -203,7 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const isOpen = answer && !answer.classList.contains('hidden');
 
-            // Close all other FAQs
             document.querySelectorAll('.faq-answer').forEach(a => a.classList.add('hidden'));
             document.querySelectorAll('.faq-icon').forEach(i => i.classList.remove('rotate-180'));
 
@@ -214,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 9. Newsletter Form Submission Handler
+    // 10. Newsletter Form Submission Handler
     const newsletterForm = document.getElementById('newsletterForm');
     const newsletterSuccess = document.getElementById('newsletterSuccess');
 
@@ -224,6 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const emailInput = document.getElementById('newsletterEmail');
             if (emailInput && emailInput.value) {
                 newsletterForm.reset();
+                showToast('Thank you for subscribing! Check your inbox for updates.', 'success');
                 if (newsletterSuccess) {
                     newsletterSuccess.classList.remove('hidden');
                     setTimeout(() => {
@@ -231,14 +313,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, 5000);
                 }
             }
-        });
-    }
-
-    // 10. Watch Demo Button Handler
-    const watchDemoBtn = document.getElementById('watchDemoBtn');
-    if (watchDemoBtn) {
-        watchDemoBtn.addEventListener('click', () => {
-            alert('🎥 Interactive Product Video Tour:\n\nNexusAI v2.5 live workflow engine is loading. Experience automated CI/CD and AI pipeline healing!');
         });
     }
 });

@@ -1,4 +1,6 @@
-// Task 2: Interactive Registration Form Script
+'use client';
+
+// Task 2: Interactive Auth & Registration Form Script
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Safe Initialize Lucide Icons
@@ -10,7 +12,85 @@ document.addEventListener('DOMContentLoaded', () => {
     initIcons();
     window.addEventListener('load', initIcons);
 
-    // Elements
+    // 2. Toast Notification Helper
+    window.showToast = (message, type = 'success') => {
+        let toastContainer = document.getElementById('toastContainer');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toastContainer';
+            toastContainer.className = 'fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none';
+            document.body.appendChild(toastContainer);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = `pointer-events-auto px-4 py-3 rounded-xl shadow-2xl border text-xs font-semibold flex items-center gap-2.5 transition-all duration-300 transform translate-y-[-10px] opacity-0 ${
+            type === 'success'
+                ? 'bg-slate-900 border-emerald-500/50 text-emerald-400 shadow-emerald-500/10'
+                : 'bg-slate-900 border-rose-500/50 text-rose-400 shadow-rose-500/10'
+        }`;
+
+        const iconName = type === 'success' ? 'check-circle-2' : 'alert-triangle';
+        toast.innerHTML = `<i data-lucide="${iconName}" class="w-4 h-4 flex-shrink-0"></i> <span>${message}</span>`;
+        toastContainer.appendChild(toast);
+
+        if (typeof lucide !== 'undefined' && lucide.createIcons) {
+            lucide.createIcons();
+        }
+
+        // Animate in
+        requestAnimationFrame(() => {
+            toast.classList.remove('translate-y-[-10px]', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+        });
+
+        // Remove after 3.5 seconds
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-[-10px]', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    };
+
+    // Mode Tab Buttons & Containers
+    const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+    const tabSigninBtn = document.getElementById('tabSigninBtn');
+    const registerFormContainer = document.getElementById('registerFormContainer');
+    const signinFormContainer = document.getElementById('signinFormContainer');
+    const linkToSignin = document.getElementById('linkToSignin');
+    const linkToRegister = document.getElementById('linkToRegister');
+
+    function switchMode(mode) {
+        if (mode === 'signin') {
+            tabSigninBtn?.classList.add('bg-slate-800', 'text-white');
+            tabSigninBtn?.classList.remove('text-slate-400');
+            tabRegisterBtn?.classList.remove('bg-slate-800', 'text-white');
+            tabRegisterBtn?.classList.add('text-slate-400');
+
+            registerFormContainer?.classList.add('hidden');
+            signinFormContainer?.classList.remove('hidden');
+        } else {
+            tabRegisterBtn?.classList.add('bg-slate-800', 'text-white');
+            tabRegisterBtn?.classList.remove('text-slate-400');
+            tabSigninBtn?.classList.remove('bg-slate-800', 'text-white');
+            tabSigninBtn?.classList.add('text-slate-400');
+
+            signinFormContainer?.classList.add('hidden');
+            registerFormContainer?.classList.remove('hidden');
+        }
+    }
+
+    if (tabRegisterBtn) tabRegisterBtn.addEventListener('click', () => switchMode('register'));
+    if (tabSigninBtn) tabSigninBtn.addEventListener('click', () => switchMode('signin'));
+    if (linkToSignin) linkToSignin.addEventListener('click', () => switchMode('signin'));
+    if (linkToRegister) linkToRegister.addEventListener('click', () => switchMode('register'));
+
+    // Check URL Query Param ?mode=signin
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('mode') === 'signin') {
+        switchMode('signin');
+    }
+
+    // Elements for Registration
     const form = document.getElementById('registrationForm');
     const fullnameInput = document.getElementById('fullname');
     const emailInput = document.getElementById('email');
@@ -29,10 +109,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSpinner = document.getElementById('btnSpinner');
     const successModal = document.getElementById('successModal');
     const closeModalBtn = document.getElementById('closeModalBtn');
-    const resetFormBtn = document.getElementById('resetFormBtn');
+    const proceedToSigninModalBtn = document.getElementById('proceedToSigninModalBtn');
 
-    // 2. Focus & Blur Glow Handlers for Input Wrappers
-    const inputs = [fullnameInput, emailInput, phoneInput, passwordInput, confirmInput];
+    // Elements for Sign In
+    const signinForm = document.getElementById('signinForm');
+    const signinEmail = document.getElementById('signinEmail');
+    const signinPassword = document.getElementById('signinPassword');
+    const signinBtn = document.getElementById('signinBtn');
+    const signinBtnText = document.getElementById('signinBtnText');
+    const signinBtnIcon = document.getElementById('signinBtnIcon');
+    const signinSpinner = document.getElementById('signinSpinner');
+
+    // Focus & Blur Glow Handlers for Input Wrappers
+    const inputs = [fullnameInput, emailInput, phoneInput, passwordInput, confirmInput, signinEmail, signinPassword];
     inputs.forEach(input => {
         if (!input) return;
         const wrapper = input.closest('.input-wrapper');
@@ -51,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 3. Validation Logic Functions
+    // Validation Functions
     function validateFullName(value) {
         const trimmed = value.trim();
         return trimmed.length >= 3 && /^[a-zA-Z\s'.-]+$/.test(trimmed);
@@ -63,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function formatPhoneNumber(value) {
-        // Strip non-digits
         const digits = value.replace(/\D/g, '');
         if (digits.length === 0) return '';
         if (digits.length <= 3) return `(${digits}`;
@@ -76,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return digits.length >= 10;
     }
 
-    // Phone Auto-Formatter Listener
     if (phoneInput) {
         phoneInput.addEventListener('input', (e) => {
             const formatted = formatPhoneNumber(e.target.value);
@@ -84,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Password Strength Meter & Checklist Logic
+    // Password Strength
     function checkPasswordStrength(password) {
         let score = 0;
         const rules = {
@@ -94,7 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
             special: /[^A-Za-z0-9]/.test(password)
         };
 
-        // Update Checklist Icons UI
         updateRuleIcon('rule-length', rules.length);
         updateRuleIcon('rule-uppercase', rules.uppercase);
         updateRuleIcon('rule-number', rules.number);
@@ -130,7 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
         const strengthText = document.getElementById('strengthText');
 
-        // Reset bars
         bars.forEach(bar => {
             if (bar) bar.className = 'h-1.5 rounded-full bg-slate-800 transition-all duration-300 strength-bar';
         });
@@ -169,7 +254,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. Toggle Password Show / Hide
     if (togglePasswordBtn && passwordInput) {
         togglePasswordBtn.addEventListener('click', () => {
             const isPassword = passwordInput.type === 'password';
@@ -179,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 6. Generic Field Validation Function
+    // Generic Field Validation
     function validateField(input) {
         if (!input) return false;
         const group = input.closest('.form-group');
@@ -195,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (input === fullnameInput) {
             isValid = validateFullName(input.value);
-        } else if (input === emailInput) {
+        } else if (input === emailInput || input === signinEmail) {
             isValid = validateEmail(input.value);
         } else if (input === phoneInput) {
             isValid = validatePhone(input.value);
@@ -204,10 +288,11 @@ document.addEventListener('DOMContentLoaded', () => {
             isValid = score >= 3;
         } else if (input === confirmInput) {
             isValid = input.value.length > 0 && passwordInput && input.value === passwordInput.value;
+        } else if (input === signinPassword) {
+            isValid = input.value.length >= 6;
         }
 
         if (input.value.trim() === '') {
-            // Empty field state
             wrapper?.classList.remove('valid-glow', 'invalid-glow');
             statusIcon?.classList.add('hidden');
             errorMsg?.classList.add('hidden');
@@ -234,7 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return isValid;
     }
 
-    // Terms Checkbox Validation
     function validateTerms() {
         const termsGroup = document.getElementById('group-terms');
         if (!termsGroup || !termsCheck) return false;
@@ -252,12 +336,11 @@ document.addEventListener('DOMContentLoaded', () => {
         termsCheck.addEventListener('change', validateTerms);
     }
 
-    // 7. Form Submission Handler
+    // REGISTRATION FORM SUBMISSION
     if (form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            // Validate all fields
             const isNameValid = validateField(fullnameInput);
             const isEmailValid = validateField(emailInput);
             const isPhoneValid = validateField(phoneInput);
@@ -268,7 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const allValid = isNameValid && isEmailValid && isPhoneValid && isPasswordValid && isConfirmValid && isTermsValid;
 
             if (!allValid) {
-                // Shake invalid groups for feedback
                 inputs.forEach(input => {
                     if (!input) return;
                     const group = input.closest('.form-group');
@@ -277,24 +359,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         setTimeout(() => group.classList.remove('animate-shake'), 400);
                     }
                 });
+                showToast('Please fix the highlighted errors before submitting.', 'error');
                 return;
             }
 
-            // Show Button Loading State
-            if (btnText) btnText.textContent = 'Processing...';
+            if (btnText) btnText.textContent = 'Creating Account...';
             if (btnIcon) btnIcon.classList.add('hidden');
             if (btnSpinner) btnSpinner.classList.remove('hidden');
             if (submitBtn) submitBtn.disabled = true;
 
-            // Simulate Async Server API Registration Call
             setTimeout(() => {
-                // Reset button state
                 if (btnText) btnText.textContent = 'Complete Registration';
                 if (btnIcon) btnIcon.classList.remove('hidden');
                 if (btnSpinner) btnSpinner.classList.add('hidden');
                 if (submitBtn) submitBtn.disabled = false;
 
-                // Populate Modal Summary Details
                 const selectedRole = document.querySelector('input[name="accountRole"]:checked')?.value || 'Developer';
                 const nameEl = document.getElementById('modalName');
                 const emailEl = document.getElementById('modalEmail');
@@ -306,32 +385,68 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (phoneEl) phoneEl.textContent = phoneInput ? phoneInput.value.trim() : '';
                 if (roleEl) roleEl.textContent = selectedRole;
 
-                // Display Success Modal
+                if (signinEmail && emailInput) {
+                    signinEmail.value = emailInput.value.trim();
+                }
+
+                showToast('Registration successful! Please sign in.', 'success');
                 if (successModal) successModal.classList.remove('hidden');
-            }, 1200);
+            }, 1000);
         });
     }
 
-    // 8. Modal Action Listeners
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', () => {
             if (successModal) successModal.classList.add('hidden');
+            switchMode('signin');
         });
     }
 
-    if (resetFormBtn) {
-        resetFormBtn.addEventListener('click', () => {
-            if (form) form.reset();
-            inputs.forEach(input => {
-                if (!input) return;
-                const wrapper = input.closest('.input-wrapper');
-                const group = input.closest('.form-group');
-                wrapper?.classList.remove('valid-glow', 'invalid-glow', 'focus-glow');
-                group?.querySelector('.status-icon')?.classList.add('hidden');
-                group?.querySelector('.error-msg')?.classList.add('hidden');
-            });
-            updatePasswordMeter('');
+    if (proceedToSigninModalBtn) {
+        proceedToSigninModalBtn.addEventListener('click', () => {
             if (successModal) successModal.classList.add('hidden');
+            switchMode('signin');
+        });
+    }
+
+    // SIGN IN FORM SUBMISSION
+    if (signinForm) {
+        signinForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const isEmailValid = validateField(signinEmail);
+            const isPasswordValid = validateField(signinPassword);
+
+            if (!isEmailValid || !isPasswordValid) {
+                showToast('Please enter valid email and password.', 'error');
+                return;
+            }
+
+            if (signinBtnText) signinBtnText.textContent = 'Signing In...';
+            if (signinBtnIcon) signinBtnIcon.classList.add('hidden');
+            if (signinSpinner) signinSpinner.classList.remove('hidden');
+            if (signinBtn) signinBtn.disabled = true;
+
+            setTimeout(() => {
+                const userEmail = signinEmail.value.trim();
+                const userName = userEmail.split('@')[0].replace(/[._]/g, ' ');
+                const formattedName = userName.charAt(0).toUpperCase() + userName.slice(1);
+
+                const userSession = {
+                    name: formattedName,
+                    email: userEmail,
+                    avatar: formattedName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+                };
+
+                // Store logged in user session
+                localStorage.setItem('nexus_user', JSON.stringify(userSession));
+
+                showToast(`Welcome back, ${userSession.name}! Redirecting to home...`, 'success');
+
+                setTimeout(() => {
+                    window.location.href = '../task1-landing-page/index.html';
+                }, 1000);
+            }, 1000);
         });
     }
 });
