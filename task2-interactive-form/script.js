@@ -446,7 +446,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast(`Welcome back, ${userSession.name}! Redirecting to home...`, 'success');
 
                 setTimeout(() => {
-                    window.location.href = '../task1-landing-page/index.html';
+                    if (window.location.pathname.includes('task1-landing-page')) {
+                        window.location.href = 'index.html';
+                    } else {
+                        window.location.href = '../task1-landing-page/index.html';
+                    }
                 }, 1000);
             }, 1000);
         });
