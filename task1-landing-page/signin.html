@@ -89,7 +89,7 @@
             <div>
                 <!-- Brand Header -->
                 <div class="flex items-center gap-3 mb-10">
-                    <a href="/" class="flex items-center gap-3 group">
+                    <a href="/task1-landing-page" class="flex items-center gap-3 group">
                         <img src="../assets/icon.png" alt="Project Icon" class="w-7 h-7 object-contain" />
                         <span
                             class="text-xl font-bold bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">Nexus<span
@@ -164,7 +164,7 @@
                         Sign In
                     </a>
                 </div>
-                <a href="/"
+                <a href="/task1-landing-page"
                     class="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-medium transition-colors">
                     <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Return to Home
                 </a>
@@ -268,7 +268,7 @@
             setTimeout(() => {
                 const emailKey = email.toLowerCase();
                 const registeredUsers = JSON.parse(localStorage.getItem('nexus_registered_users') || '{}');
-                
+
                 let userSession = registeredUsers[emailKey];
 
                 if (userSession) {
