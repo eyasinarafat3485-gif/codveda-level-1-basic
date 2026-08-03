@@ -1,5 +1,13 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/", "destination": "/task1-landing-page/index.html" },
+    { "source": "/signin", "destination": "/task1-landing-page/signin.html" },
+    { "source": "/register", "destination": "/task1-landing-page/register.html" },
+    { "source": "/hub", "destination": "/index.html" },
+    { "source": "/task1", "destination": "/task1-landing-page/index.html" },
+    { "source": "/task2", "destination": "/task2-interactive-form/index.html" }
+  ]
 }
