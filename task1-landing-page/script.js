@@ -79,9 +79,7 @@ function checkAuthState() {
         };
     }
 
-
     if (user) {
-        // Toggle Desktop Actions (Inline Flex Row)
         if (loggedOutActions) {
             loggedOutActions.classList.add('hidden');
             loggedOutActions.style.setProperty('display', 'none', 'important');
@@ -92,7 +90,6 @@ function checkAuthState() {
             loggedInActions.style.setProperty('display', 'flex', 'important');
         }
 
-        // Toggle Mobile Actions
         if (loggedOutActionsMobile) {
             loggedOutActionsMobile.classList.add('hidden');
             loggedOutActionsMobile.style.setProperty('display', 'none', 'important');
@@ -103,7 +100,6 @@ function checkAuthState() {
             loggedInActionsMobile.style.setProperty('display', 'flex', 'important');
         }
 
-        // Render Avatar Image / Initial Fallback
         const initial = user.avatar || (user.name ? user.name.charAt(0).toUpperCase() : 'U');
         const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user.name || 'User')}`;
         const avatarUrl = (user.photoUrl && user.photoUrl.startsWith('http')) ? user.photoUrl : defaultAvatar;
@@ -117,16 +113,13 @@ function checkAuthState() {
         if (userNameMobile) userNameMobile.textContent = user.name || 'User';
         if (userEmailMobile) userEmailMobile.textContent = user.email || '';
 
-        // Toast Notification on Login
         if (sessionStorage.getItem('nexus_just_logged_in') === 'true') {
             sessionStorage.removeItem('nexus_just_logged_in');
             setTimeout(() => {
                 if (window.showToast) showToast(`Welcome back, ${user.name}!`, 'success');
             }, 300);
         }
-    }
-    // IF USER IS LOGGED OUT
-    else {
+    } else {
         if (loggedOutActions) {
             loggedOutActions.classList.remove('hidden');
             loggedOutActions.style.setProperty('display', 'flex', 'important');
@@ -171,22 +164,166 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mobile Drawer Toggle
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
+    const menuIcon = document.getElementById('menuIcon');
+    const closeIcon = document.getElementById('closeIcon');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
     if (mobileMenuBtn && mobileMenu) {
         mobileMenuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
+            if (menuIcon) menuIcon.classList.toggle('hidden');
+            if (closeIcon) closeIcon.classList.toggle('hidden');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                if (menuIcon) menuIcon.classList.remove('hidden');
+                if (closeIcon) closeIcon.classList.add('hidden');
+            });
         });
     }
 
-    // FAQ Accordion
-    const faqToggles = document.querySelectorAll('.faq-toggle');
-    faqToggles.forEach(toggle => {
-        toggle.addEventListener('click', () => {
-            const item = toggle.closest('.faq-item');
-            if (!item) return;
-            const answer = item.querySelector('.faq-answer');
-            if (answer) answer.classList.toggle('hidden');
+    // Feature Tabs Toggle Logic
+    const featureTabs = document.querySelectorAll(".feature-tab");
+    const featureContents = document.querySelectorAll(".tab-content");
+
+    featureTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            const targetId = tab.getAttribute("data-target");
+
+            featureTabs.forEach(t => {
+                t.classList.remove("active", "bg-slate-800", "text-white");
+                t.classList.add("text-slate-300");
+            });
+
+            tab.classList.add("active", "bg-slate-800", "text-white");
+            tab.classList.remove("text-slate-300");
+
+            featureContents.forEach(content => {
+                content.classList.add("hidden");
+                content.classList.remove("block");
+            });
+
+            const targetContent = document.getElementById(targetId);
+            if (targetContent) {
+                targetContent.classList.remove("hidden");
+                targetContent.classList.add("block");
+            }
         });
     });
+
+    // Pricing Monthly / Annual Toggle
+    const pricingToggle = document.getElementById("pricingToggle");
+    const toggleDot = document.getElementById("toggleDot");
+    const monthlyLabel = document.getElementById("monthlyLabel");
+    const annualLabel = document.getElementById("annualLabel");
+    const priceValues = document.querySelectorAll(".price-value");
+
+    let isAnnual = false;
+
+    if (pricingToggle) {
+        pricingToggle.addEventListener("click", () => {
+            isAnnual = !isAnnual;
+
+            if (isAnnual) {
+                toggleDot.style.transform = "translateX(24px)";
+                monthlyLabel.classList.replace("text-white", "text-slate-400");
+                annualLabel.classList.replace("text-slate-400", "text-white");
+            } else {
+                toggleDot.style.transform = "translateX(0px)";
+                monthlyLabel.classList.replace("text-slate-400", "text-white");
+                annualLabel.classList.replace("text-white", "text-slate-400");
+            }
+
+            priceValues.forEach(price => {
+                const monthlyPrice = price.getAttribute("data-monthly");
+                const annualPrice = price.getAttribute("data-annual");
+                price.textContent = `$${isAnnual ? annualPrice : monthlyPrice}`;
+            });
+        });
+    }
+
+    // Metrics Counters Animation
+    const counters = document.querySelectorAll(".counter");
+    let animated = false;
+
+    const runCounters = () => {
+        counters.forEach(counter => {
+            const target = parseFloat(counter.getAttribute("data-target"));
+            let current = 0;
+            const increment = target / 50;
+
+            const updateCount = () => {
+                current += increment;
+                if (current < target) {
+                    counter.textContent = Number.isInteger(target) ? Math.ceil(current) : current.toFixed(2);
+                    setTimeout(updateCount, 30);
+                } else {
+                    counter.textContent = target;
+                }
+            };
+            updateCount();
+        });
+    };
+
+    const metricsSection = document.getElementById("metrics");
+    if (metricsSection) {
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !animated) {
+                    runCounters();
+                    animated = true;
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        observer.observe(metricsSection);
+    }
+
+    // FAQ Accordion
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        const toggleBtn = item.querySelector('.faq-toggle');
+        const answer = item.querySelector('.faq-answer');
+        const icon = item.querySelector('.faq-icon');
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.querySelector('.faq-answer').classList.add('hidden');
+                        const otherIcon = otherItem.querySelector('.faq-icon');
+                        if (otherIcon) otherIcon.style.transform = 'rotate(0deg)';
+                    }
+                });
+
+                if (answer) answer.classList.toggle('hidden');
+                if (icon) {
+                    if (answer.classList.contains('hidden')) {
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                }
+            });
+        }
+    });
+
+    // Newsletter Form
+    const newsletterForm = document.getElementById("newsletterForm");
+    const newsletterSuccess = document.getElementById("newsletterSuccess");
+
+    if (newsletterForm) {
+        newsletterForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            newsletterForm.classList.add("hidden");
+            if (newsletterSuccess) {
+                newsletterSuccess.classList.remove("hidden");
+            }
+        });
+    }
 });
 
 // Force Check Auth on Back/Forward Navigation & Redirects
