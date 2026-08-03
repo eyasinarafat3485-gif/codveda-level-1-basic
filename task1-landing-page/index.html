@@ -4,18 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>NexusAI - Modern Workflow & Automation Platform</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../nexus-favicon.ico">
+
     <meta name="description"
         content="NexusAI empowers modern engineering and product teams to automate workflows, analyze performance, and scale operations effortlessly.">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
+
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Tailwind CSS CDN with custom config -->
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -55,14 +64,21 @@
                             '50%': { transform: 'translateY(-12px)' },
                         },
                         'gradient-x': {
-                            '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
-                            '50%': { 'background-size': '200% 200%', 'background-position': 'right center' }
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            }
                         }
                     }
                 }
             }
         }
     </script>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -99,9 +115,6 @@
 
             <!-- Actions -->
             <div class="hidden md:flex items-center gap-4">
-                <a href="#pricing"
-                    class="text-sm font-semibold text-slate-300 hover:text-white px-4 py-2.5 rounded-xl hover:bg-slate-900 transition-all">Sign
-                    In</a>
                 <a href="#pricing"
                     class="relative group inline-flex items-center justify-center p-0.5 overflow-hidden rounded-xl font-semibold text-sm">
                     <span
