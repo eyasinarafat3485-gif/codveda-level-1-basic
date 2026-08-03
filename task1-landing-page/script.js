@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 7. Scroll Triggered Animated Metrics Counter (API / Count Fix)
+    // 7. Scroll Triggered Animated Metrics Counter (API & Dynamic Count Fix)
     const counters = document.querySelectorAll('.counter');
     let hasAnimatedCounters = false;
 
@@ -193,8 +193,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isNaN(target)) return;
 
             const isFloat = target % 1 !== 0;
-            const duration = 2000;
-            const steps = 50;
+            const duration = 1800;
+            const steps = 40;
             const stepTime = duration / steps;
             let current = 0;
             const increment = target / steps;
@@ -217,12 +217,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 hasAnimatedCounters = true;
                 animateCounters();
             }
-        }, { threshold: 0.3 });
+        }, { threshold: 0.1 });
 
         observer.observe(metricsSection);
-    } else {
-        animateCounters();
     }
+    
+    // Fallback trigger to guarantee counters never stay at 0 on live site
+    setTimeout(() => {
+        if (!hasAnimatedCounters) {
+            hasAnimatedCounters = true;
+            animateCounters();
+        }
+    }, 1200);
 
     // 8. Pricing Billing Cycle Toggle (Monthly vs Annual)
     const pricingToggle = document.getElementById('pricingToggle');
