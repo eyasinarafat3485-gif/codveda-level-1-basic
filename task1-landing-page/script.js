@@ -71,9 +71,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (loggedOutActionsMobile) loggedOutActionsMobile.classList.add('hidden');
                 if (loggedInActionsMobile) loggedInActionsMobile.classList.remove('hidden');
 
-                if (userAvatar) userAvatar.textContent = user.avatar || user.name.charAt(0).toUpperCase();
+                if (user.photoUrl && user.photoUrl.startsWith('http')) {
+                    if (userAvatar) userAvatar.innerHTML = `<img src="${user.photoUrl}" alt="${user.name}" class="w-7 h-7 rounded-full object-cover" />`;
+                    if (userAvatarMobile) userAvatarMobile.innerHTML = `<img src="${user.photoUrl}" alt="${user.name}" class="w-8 h-8 rounded-full object-cover" />`;
+                } else {
+                    if (userAvatar) userAvatar.textContent = user.avatar || user.name.charAt(0).toUpperCase();
+                    if (userAvatarMobile) userAvatarMobile.textContent = user.avatar || user.name.charAt(0).toUpperCase();
+                }
                 if (userName) userName.textContent = user.name;
-                if (userAvatarMobile) userAvatarMobile.textContent = user.avatar || user.name.charAt(0).toUpperCase();
                 if (userNameMobile) userNameMobile.textContent = user.name;
                 if (userEmailMobile) userEmailMobile.textContent = user.email || '';
             } catch (e) {

@@ -429,12 +429,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             setTimeout(() => {
                 const userEmail = signinEmail.value.trim();
+                const photoUrlInput = document.getElementById('photoUrl');
                 const userName = userEmail.split('@')[0].replace(/[._]/g, ' ');
                 const formattedName = userName.charAt(0).toUpperCase() + userName.slice(1);
 
                 const userSession = {
                     name: formattedName,
                     email: userEmail,
+                    photoUrl: photoUrlInput ? photoUrlInput.value.trim() : '',
                     avatar: formattedName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
                 };
 
