@@ -413,32 +413,6 @@
                     efficiency and seamless team collaboration.</p>
             </div>
 
-            <!-- Feature Tabs Header -->
-            <div class="flex justify-center mb-12 overflow-x-auto pb-2 scrollbar-none">
-                <div class="flex gap-2 p-1.5 rounded-2xl bg-slate-900 border border-slate-800 text-sm">
-                    <button
-                        class="feature-tab active px-5 py-2.5 rounded-xl font-medium transition-all text-slate-300 hover:text-white"
-                        data-target="tab-analytics">
-                        <i data-lucide="line-chart" class="w-4 h-4 inline mr-2"></i>Real-time Analytics
-                    </button>
-                    <button
-                        class="feature-tab px-5 py-2.5 rounded-xl font-medium transition-all text-slate-300 hover:text-white"
-                        data-target="tab-automation">
-                        <i data-lucide="bot" class="w-4 h-4 inline mr-2"></i>AI Automation
-                    </button>
-                    <button
-                        class="feature-tab px-5 py-2.5 rounded-xl font-medium transition-all text-slate-300 hover:text-white"
-                        data-target="tab-security">
-                        <i data-lucide="lock" class="w-4 h-4 inline mr-2"></i>Zero-Trust Security
-                    </button>
-                    <button
-                        class="feature-tab px-5 py-2.5 rounded-xl font-medium transition-all text-slate-300 hover:text-white"
-                        data-target="tab-integrations">
-                        <i data-lucide="plug" class="w-4 h-4 inline mr-2"></i>200+ Integrations
-                    </button>
-                </div>
-            </div>
-
             <!-- Feature Tab Contents -->
             <div class="relative">
                 <!-- Tab 1 Content -->
@@ -518,132 +492,7 @@
                     </div>
                 </div>
 
-                <!-- Tab 2 Content -->
-                <div id="tab-automation" class="tab-content hidden transition-opacity duration-300">
-                    <div
-                        class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-slate-900/40 border border-slate-800 rounded-3xl p-8 lg:p-12 backdrop-blur-sm">
-                        <div>
-                            <div
-                                class="w-12 h-12 rounded-2xl bg-accent-purple/10 border border-accent-purple/30 flex items-center justify-center text-accent-purple mb-6">
-                                <i data-lucide="sparkles" class="w-6 h-6"></i>
-                            </div>
-                            <h3 class="text-2xl sm:text-3xl font-bold text-white mb-4">Autonomous AI Execution Agents
-                            </h3>
-                            <p class="text-slate-400 mb-6 leading-relaxed">Deploy self-healing automation workflows that
-                                interpret unstructured inputs and handle error retries autonomously.</p>
-                            <ul class="space-y-3 mb-8">
-                                <li class="flex items-center gap-3 text-slate-300 text-sm">
-                                    <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400 flex-shrink-0"></i>
-                                    Natural language workflow generator
-                                </li>
-                                <li class="flex items-center gap-3 text-slate-300 text-sm">
-                                    <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400 flex-shrink-0"></i>
-                                    Smart retry & fallbacks without breaking pipeline
-                                </li>
-                            </ul>
-                        </div>
-                        <div
-                            class="bg-slate-950 border border-slate-800 rounded-2xl p-6 font-mono text-xs text-slate-300 space-y-2">
-                            <div class="text-slate-500">// AI Workflow Definition</div>
-                            <div class="text-brand-400">workflow <span class="text-white">CustomerOnboarding</span> {
-                            </div>
-                            <div class="pl-4 text-slate-300">trigger: <span
-                                    class="text-accent-cyan">onUserSignUp</span>,</div>
-                            <div class="pl-4 text-slate-300">step1: <span
-                                    class="text-accent-purple">verifyIdentity</span>(),</div>
-                            <div class="pl-4 text-slate-300">step2: <span
-                                    class="text-emerald-400">provisionResources</span>({ region: "us-east" })</div>
-                            <div class="text-brand-400">}</div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Tab 3 Content -->
-                <div id="tab-security" class="tab-content hidden transition-opacity duration-300">
-                    <div
-                        class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-slate-900/40 border border-slate-800 rounded-3xl p-8 lg:p-12 backdrop-blur-sm">
-                        <div>
-                            <div
-                                class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-6">
-                                <i data-lucide="shield" class="w-6 h-6"></i>
-                            </div>
-                            <h3 class="text-2xl sm:text-3xl font-bold text-white mb-4">Bank-Grade Zero-Trust Security
-                            </h3>
-                            <p class="text-slate-400 mb-6 leading-relaxed">End-to-end AES-256 encryption at rest and in
-                                transit. SOC2 Type II and HIPAA compliant architecture built for enterprise safety.</p>
-                        </div>
-                        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-8 text-center">
-                            <i data-lucide="shield-check"
-                                class="w-16 h-16 text-emerald-400 mx-auto mb-4 animate-pulse-slow"></i>
-                            <div class="text-lg font-bold text-white">SOC2 Type II Certified</div>
-                            <div class="text-xs text-slate-400 mt-2">Continuous automated security audits & automated
-                                vulnerability scanning.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tab 4 Content -->
-                <div id="tab-integrations" class="tab-content hidden transition-opacity duration-300">
-                    <div
-                        class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-slate-900/40 border border-slate-800 rounded-3xl p-8 lg:p-12 backdrop-blur-sm">
-                        <div>
-                            <div
-                                class="w-12 h-12 rounded-2xl bg-accent-cyan/10 border border-accent-cyan/30 flex items-center justify-center text-accent-cyan mb-6">
-                                <i data-lucide="cpu" class="w-6 h-6"></i>
-                            </div>
-                            <h3 class="text-2xl sm:text-3xl font-bold text-white mb-4">Connect with any stack in seconds
-                            </h3>
-                            <p class="text-slate-400 mb-6 leading-relaxed">Pre-built native connectors for GitHub,
-                                Slack, AWS, Snowflake, Salesforce, PostgreSQL, and GraphQL.</p>
-                        </div>
-                        <div class="grid grid-cols-3 gap-4">
-                            <div
-                                class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-center font-semibold text-slate-300 hover:text-white hover:border-slate-700 transition-all">
-                                <i data-lucide="github" class="w-8 h-8 mx-auto mb-2 text-white"></i> GitHub
-                            </div>
-                            <div
-                                class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-center font-semibold text-slate-300 hover:text-white hover:border-slate-700 transition-all">
-                                <i data-lucide="slack" class="w-8 h-8 mx-auto mb-2 text-accent-cyan"></i> Slack
-                            </div>
-                            <div
-                                class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-center font-semibold text-slate-300 hover:text-white hover:border-slate-700 transition-all">
-                                <i data-lucide="cloud" class="w-8 h-8 mx-auto mb-2 text-brand-400"></i> AWS
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- IMPACT & METRICS (SCROLL ANIMATED COUNTERS) -->
-        <section id="metrics" class="py-20 border-y border-slate-800 bg-slate-900/30 relative">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                    <div class="p-6">
-                        <div class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-2 counter"
-                            data-target="99.99">0</div>
-                        <div class="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-400">Uptime SLA
-                            (%)</div>
-                    </div>
-                    <div class="p-6">
-                        <div class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-2 counter"
-                            data-target="100">0</div>
-                        <div class="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-400">M+ Daily
-                            Events</div>
-                    </div>
-                    <div class="p-6">
-                        <div class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-2 counter"
-                            data-target="14">0</div>
-                        <div class="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-400">ms Global
-                            Latency</div>
-                    </div>
-                    <div class="p-6">
-                        <div class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-2 counter"
-                            data-target="50">0</div>
-                        <div class="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-400">K+ Active
-                            Teams</div>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -658,19 +507,7 @@
 
                 <!-- Billing Cycle Toggle Switch -->
                 <div class="flex items-center justify-center gap-4 mt-8">
-                    <span id="monthlyLabel" class="text-sm font-semibold text-white">Monthly Billing</span>
-                    <button id="pricingToggle" aria-label="Toggle pricing billing cycle"
-                        class="w-14 h-8 rounded-full bg-slate-800 border border-slate-700 p-1 flex items-center transition-colors relative focus:outline-none">
-                        <div id="toggleDot"
-                            class="w-6 h-6 rounded-full bg-brand-500 transition-transform transform translate-x-0 shadow-md">
-                        </div>
-                    </button>
-                    <span id="annualLabel" class="text-sm font-semibold text-slate-400 flex items-center gap-2">
-                        Annual Billing
-                        <span
-                            class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-xs border border-emerald-500/30">Save
-                            20%</span>
-                    </span>
+
                 </div>
             </div>
 
