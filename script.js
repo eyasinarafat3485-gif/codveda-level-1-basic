@@ -81,37 +81,37 @@ function checkAuthState() {
 
     // IF USER IS LOGGED IN
     if (user) {
-        // Toggle Desktop Actions
+        // Toggle Desktop Actions (Inline Flex Row)
         if (loggedOutActions) {
             loggedOutActions.classList.add('hidden');
-            loggedOutActions.classList.remove('flex');
+            loggedOutActions.style.setProperty('display', 'none', 'important');
         }
         if (loggedInActions) {
             loggedInActions.classList.remove('hidden');
             loggedInActions.classList.add('flex');
+            loggedInActions.style.setProperty('display', 'flex', 'important');
         }
 
         // Toggle Mobile Actions
         if (loggedOutActionsMobile) {
             loggedOutActionsMobile.classList.add('hidden');
-            loggedOutActionsMobile.classList.remove('flex');
+            loggedOutActionsMobile.style.setProperty('display', 'none', 'important');
         }
         if (loggedInActionsMobile) {
             loggedInActionsMobile.classList.remove('hidden');
             loggedInActionsMobile.classList.add('flex');
+            loggedInActionsMobile.style.setProperty('display', 'flex', 'important');
         }
 
-        // Render Avatar Initial / Image
+        // Render Avatar Image / Initial Fallback
         const initial = user.avatar || (user.name ? user.name.charAt(0).toUpperCase() : 'U');
+        const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user.name || 'User')}`;
+        const avatarUrl = (user.photoUrl && user.photoUrl.startsWith('http')) ? user.photoUrl : defaultAvatar;
 
-        if (user.photoUrl && user.photoUrl.startsWith('http')) {
-            const imgHtml = `<img src="${user.photoUrl}" alt="${user.name}" class="w-full h-full object-cover rounded-full" />`;
-            if (userAvatar) userAvatar.innerHTML = imgHtml;
-            if (userAvatarMobile) userAvatarMobile.innerHTML = imgHtml;
-        } else {
-            if (userAvatar) userAvatar.textContent = initial;
-            if (userAvatarMobile) userAvatarMobile.textContent = initial;
-        }
+        const imgHtml = `<img src="${avatarUrl}" alt="${user.name || 'User'}" class="w-full h-full object-cover rounded-full" onError="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><span class="hidden w-full h-full items-center justify-center font-bold text-xs text-white">${initial}</span>`;
+
+        if (userAvatar) userAvatar.innerHTML = imgHtml;
+        if (userAvatarMobile) userAvatarMobile.innerHTML = imgHtml;
 
         if (userName) userName.textContent = user.name || 'User';
         if (userNameMobile) userNameMobile.textContent = user.name || 'User';
@@ -121,7 +121,7 @@ function checkAuthState() {
         if (sessionStorage.getItem('nexus_just_logged_in') === 'true') {
             sessionStorage.removeItem('nexus_just_logged_in');
             setTimeout(() => {
-                showToast(`Welcome back, ${user.name}!`, 'success');
+                if (window.showToast) showToast(`Welcome back, ${user.name}!`, 'success');
             }, 300);
         }
     }
@@ -129,20 +129,20 @@ function checkAuthState() {
     else {
         if (loggedOutActions) {
             loggedOutActions.classList.remove('hidden');
-            loggedOutActions.classList.add('flex');
+            loggedOutActions.style.setProperty('display', 'flex', 'important');
         }
         if (loggedInActions) {
             loggedInActions.classList.add('hidden');
-            loggedInActions.classList.remove('flex');
+            loggedInActions.style.setProperty('display', 'none', 'important');
         }
 
         if (loggedOutActionsMobile) {
             loggedOutActionsMobile.classList.remove('hidden');
-            loggedOutActionsMobile.classList.add('flex');
+            loggedOutActionsMobile.style.setProperty('display', 'flex', 'important');
         }
         if (loggedInActionsMobile) {
-            loggedOutActionsMobile.classList.add('hidden');
-            loggedOutActionsMobile.classList.remove('flex');
+            loggedInActionsMobile.classList.add('hidden');
+            loggedInActionsMobile.style.setProperty('display', 'none', 'important');
         }
     }
 
