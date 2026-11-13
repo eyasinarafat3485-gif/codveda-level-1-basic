@@ -1,7 +1,6 @@
 # 🚀 Front End Development Internship Projects – Codveda Technologies
 
 This repository contains all the tasks, projects, and assignments completed during my **Front End Development Internship** at **Codveda Technologies** (Duration: July 24, 2026 – August 24, 2026).
-
 ---
 
 ## 📌 Internship Overview
